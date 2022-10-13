@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\Appointment;
 use App\Models\User;
+use App\Models\Appointment;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AppointmentPolicy
@@ -18,11 +18,7 @@ class AppointmentPolicy
      */
     public function viewAny(User $user)
     {
-        if($user->role_id == 4){
-            return false;
-        }else{
-        return true;
-        }
+        return $user->can('view_any_my::appointment');
     }
 
     /**
@@ -34,11 +30,7 @@ class AppointmentPolicy
      */
     public function view(User $user, Appointment $appointment)
     {
-        if($user->role_id == 4){
-            return false;
-        }else{
-            return true;
-            }
+        return $user->can('view_my::appointment');
     }
 
     /**
@@ -49,10 +41,7 @@ class AppointmentPolicy
      */
     public function create(User $user)
     {
-        //
-        // return $user->role_id == 1 || 2;
-        return true;
-
+        return $user->can('create_my::appointment');
     }
 
     /**
@@ -64,8 +53,7 @@ class AppointmentPolicy
      */
     public function update(User $user, Appointment $appointment)
     {
-        return $user->role_id == 1 || 2;
-        //
+        return $user->can('update_my::appointment');
     }
 
     /**
@@ -77,8 +65,87 @@ class AppointmentPolicy
      */
     public function delete(User $user, Appointment $appointment)
     {
-        return $user->role_id == 1 || 2;
-        //
+        return $user->can('delete_my::appointment');
+    }
+
+    /**
+     * Determine whether the user can bulk delete.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function deleteAny(User $user)
+    {
+        return $user->can('delete_any_my::appointment');
+    }
+
+    /**
+     * Determine whether the user can permanently delete.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Appointment  $appointment
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function forceDelete(User $user, Appointment $appointment)
+    {
+        return $user->can('force_delete_my::appointment');
+    }
+
+    /**
+     * Determine whether the user can permanently bulk delete.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function forceDeleteAny(User $user)
+    {
+        return $user->can('force_delete_any_my::appointment');
+    }
+
+    /**
+     * Determine whether the user can restore.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Appointment  $appointment
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function restore(User $user, Appointment $appointment)
+    {
+        return $user->can('restore_my::appointment');
+    }
+
+    /**
+     * Determine whether the user can bulk restore.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function restoreAny(User $user)
+    {
+        return $user->can('restore_any_my::appointment');
+    }
+
+    /**
+     * Determine whether the user can bulk restore.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Appointment  $appointment
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function replicate(User $user, Appointment $appointment)
+    {
+        return $user->can('replicate_my::appointment');
+    }
+
+    /**
+     * Determine whether the user can reorder.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function reorder(User $user)
+    {
+        return $user->can('reorder_my::appointment');
     }
 
 }

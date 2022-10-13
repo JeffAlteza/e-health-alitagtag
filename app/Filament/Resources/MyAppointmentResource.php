@@ -17,11 +17,16 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class MyAppointmentResource extends Resource
 {
+    use HandlesAuthorization;
+
     protected static ?string $model = Appointment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
@@ -121,4 +126,16 @@ class MyAppointmentResource extends Resource
             'index' => Pages\ManageMyAppointments::route('/'),
         ];
     }    
+
+    public static function canView(Model $record): bool
+    {
+        return false;
+    }
+        
+    
+
+    public static function CanViewAny(): bool
+    {
+        return false;
+    }
 }

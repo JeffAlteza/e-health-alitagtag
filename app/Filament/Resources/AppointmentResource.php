@@ -128,4 +128,9 @@ class AppointmentResource extends Resource
             'edit' => Pages\EditAppointment::route('/{record}/edit'),
         ];
     }    
+
+    protected static function getNavigationBadge(): ?string
+    {   
+        return self::getModel()::count();
+    }
 }

@@ -12,9 +12,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use JeffGreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable as two_FA;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+use Spatie\Permission\Traits\HasRoles;
+
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, two_FA;
+    use HasApiTokens, HasFactory, Notifiable, two_FA, HasRoles;
 
     /**
      * The attributes that are mass assignable.

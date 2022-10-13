@@ -82,8 +82,7 @@ class DoctorScheduleResource extends Resource
                 ->colors([
                     'danger' => 'unavailable',
                     'success' => 'available',
-                ])->sortable(),
-                
+                ])->sortable()
             ])
             ->filters([
                 //
@@ -110,5 +109,10 @@ class DoctorScheduleResource extends Resource
             'create' => Pages\CreateDoctorSchedule::route('/create'),
             'edit' => Pages\EditDoctorSchedule::route('/{record}/edit'),
         ];
-    }    
+    }  
+    
+    protected static function getNavigationBadge(): ?string
+    {   
+        return self::getModel()::count();
+    }
 }
