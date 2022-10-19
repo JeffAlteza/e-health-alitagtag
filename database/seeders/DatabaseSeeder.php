@@ -24,16 +24,20 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         Roles::factory()->create([
-            'name' => 'Administrator'
+            'name' => 'Administrator',
+            'guard_name'=>'web',
         ]);
         Roles::factory()->create([
             'name' => 'Nurse',
+            'guard_name'=>'web',
         ]);
         Roles::factory()->create([
             'name' => 'Doctor',
+            'guard_name'=>'web',
         ]);
         Roles::factory()->create([
             'name' => 'Patient',
+            'guard_name'=>'web',
         ]);
         
 

@@ -16,7 +16,7 @@ class AppointmentOverview extends BaseWidget
         return [
                 Card::make('Appointment this Week', Appointment::where('date', '>', $dateWeek)->count()),
                 Card::make('Appointment this Day', Appointment::where('date','=', $date)->count()),
-                Card::make('Pending', Appointment::where('status','=', 'pending')->count()),
+                Card::make('Pending Today', Appointment::where('status','=', 'pending')->where('date','=', $date)->count()),
         ];
     }
 }

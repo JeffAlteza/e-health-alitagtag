@@ -18,7 +18,7 @@ class AppointmentPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_my::appointment');
+        return $user->can('view_any_appointment');
     }
 
     /**
@@ -30,7 +30,7 @@ class AppointmentPolicy
      */
     public function view(User $user, Appointment $appointment)
     {
-        return $user->can('view_my::appointment');
+        return $user->can('view_appointment');
     }
 
     /**
@@ -41,7 +41,7 @@ class AppointmentPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_my::appointment');
+        return $user->can('create_appointment');
     }
 
     /**
@@ -53,7 +53,7 @@ class AppointmentPolicy
      */
     public function update(User $user, Appointment $appointment)
     {
-        return $user->can('update_my::appointment');
+        return $user->can('update_appointment');
     }
 
     /**
@@ -65,7 +65,7 @@ class AppointmentPolicy
      */
     public function delete(User $user, Appointment $appointment)
     {
-        return $user->can('delete_my::appointment');
+        return $user->can('delete_appointment');
     }
 
     /**
@@ -76,7 +76,7 @@ class AppointmentPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_my::appointment');
+        return $user->can('delete_any_appointment');
     }
 
     /**
@@ -88,7 +88,7 @@ class AppointmentPolicy
      */
     public function forceDelete(User $user, Appointment $appointment)
     {
-        return $user->can('force_delete_my::appointment');
+        return $user->can('force_delete_appointment');
     }
 
     /**
@@ -99,7 +99,7 @@ class AppointmentPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('force_delete_any_my::appointment');
+        return $user->can('force_delete_any_appointment');
     }
 
     /**
@@ -111,7 +111,7 @@ class AppointmentPolicy
      */
     public function restore(User $user, Appointment $appointment)
     {
-        return $user->can('restore_my::appointment');
+        return $user->can('restore_appointment');
     }
 
     /**
@@ -122,7 +122,7 @@ class AppointmentPolicy
      */
     public function restoreAny(User $user)
     {
-        return $user->can('restore_any_my::appointment');
+        return $user->can('restore_any_appointment');
     }
 
     /**
@@ -134,7 +134,7 @@ class AppointmentPolicy
      */
     public function replicate(User $user, Appointment $appointment)
     {
-        return $user->can('replicate_my::appointment');
+        return $user->can('replicate_appointment');
     }
 
     /**
@@ -145,7 +145,7 @@ class AppointmentPolicy
      */
     public function reorder(User $user)
     {
-        return $user->can('reorder_my::appointment');
+        return $user->can('reorder_appointment');
     }
 
 }

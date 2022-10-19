@@ -13,7 +13,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-        'Ramnzys\FilamentEmailLog\Models\Email' => 'App\Policies\EmailPolicy'
+        'Ramnzys\FilamentEmailLog\Models\Email' => 'App\Policies\EmailPolicy',
+        'Stephenjude\FilamentBlog\Models\Post' => 'App\Policies\PostPolicy',
+        'Stephenjude\FilamentBlog\Models\Author' => 'App\Policies\AuthorPolicy',
+        'Stephenjude\FilamentBlog\Models\Category' => 'App\Policies\CategoryPolicy',
     ];
 
     /**

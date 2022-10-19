@@ -11,7 +11,6 @@ class Appointment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'patient_id',
         'name',
         'gender',
         'birthday',
@@ -19,8 +18,9 @@ class Appointment extends Model
         'category',
         'specification',
         'date',
-        'status'
-
+        'status',
+        'user_id',
+        'doctor_id'
     ];
 
     public function user():BelongsTo

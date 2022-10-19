@@ -15,8 +15,10 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Savannabits\Flatpickr\Flatpickr;
@@ -73,25 +75,42 @@ class DoctorScheduleResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('doctor.name'),
-                TextColumn::make('category'),
-                TextColumn::make('date')->date(),
-                TextColumn::make('time_start'),
-                TextColumn::make('time_end'),
+                TextColumn::make('doctor.name')->sortable()->toggleable()->searchable(),
+                TextColumn::make('category')->toggleable()->searchable(),
+                TextColumn::make('date')->sortable()->date()->toggleable()->searchable(),
+                TextColumn::make('time_start')->toggleable()->searchable(),
+                TextColumn::make('time_end')->toggleable()->searchable(),
                 BadgeColumn::make('status')
                 ->colors([
                     'danger' => 'unavailable',
                     'success' => 'available',
-                ])->sortable()
+                ])->sortable()->toggleable()->searchable()
             ])
             ->filters([
-                //
+                Filter::make('schedule_at')
+                ->form([
+                    DatePicker::make('schedule_from'),
+                    DatePicker::make('schedule_until'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['schedule_from'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
+                        )
+                        ->when(
+                            $data['schedule_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
+                        );
+                })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Action::make('book'),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
     

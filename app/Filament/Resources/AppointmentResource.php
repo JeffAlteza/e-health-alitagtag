@@ -14,6 +14,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -25,7 +26,7 @@ class AppointmentResource extends Resource
 
     protected static ?string $navigationGroup = "Manage";
 
-    protected static ?string $recordTitleAttribute ='name'; 
+    protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?int $navigationSort = 1;
 
@@ -34,10 +35,14 @@ class AppointmentResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('doctor.id')
-                ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
-                ->label('Doctor Name'),
-
+                TextInput::make('user_id')
+                    ->default(auth()->user()->id)
+                    ->disabled()
+                    ->hidden()
+                    ->required(),
+                Select::make('doctor_id')
+                    ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
+                    ->label('Doctor Name'),
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -77,7 +82,8 @@ class AppointmentResource extends Resource
                         'cancelled' => 'Cancelled',
                         'pending' => 'Pending',
                         'success' => 'Success',
-                             ])
+                    ])
+                    ->default('pending')
                     ->required(),
             ]);
     }
@@ -86,7 +92,7 @@ class AppointmentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.id')->sortable()->searchable()->toggleable(),
+                Tables\Columns\TextColumn::make('user.name')->sortable()->searchable()->toggleable(),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable()->toggleable(),
                 Tables\Columns\TextColumn::make('gender')->toggleable(),
                 Tables\Columns\TextColumn::make('category')->toggleable(),
@@ -103,7 +109,22 @@ class AppointmentResource extends Resource
 
             ])
             ->filters([
-                //
+                Filter::make('appointment_at')
+                    ->form([
+                        DatePicker::make('appointment_from'),
+                        DatePicker::make('appointment_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['appointment_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
+                            )
+                            ->when(
+                                $data['appointment_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -112,14 +133,14 @@ class AppointmentResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -127,10 +148,34 @@ class AppointmentResource extends Resource
             'create' => Pages\CreateAppointment::route('/create'),
             'edit' => Pages\EditAppointment::route('/{record}/edit'),
         ];
-    }    
+    }
 
     protected static function getNavigationBadge(): ?string
-    {   
-        return self::getModel()::count();
+    {
+
+        if (auth()->user()->role_id == 3) {
+            return parent::getEloquentQuery()
+                ->where('doctor_id', auth()->user()->id)
+                ->count();
+        } else if (auth()->user()->role_id == 4) {
+            return parent::getEloquentQuery()
+                ->where('user_id', auth()->user()->id)
+                ->count();
+        } else {
+            return self::getModel()::count();
+        }
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        // if role id of logged in user is 2, table must display all record with role id = 4
+        // else, display all record
+        if (auth()->user()->role_id == 3) {
+            return parent::getEloquentQuery()
+                ->where('doctor_id', auth()->user()->id);
+        } else {
+            // code here
+            return parent::getEloquentQuery();
+        }
     }
 }
