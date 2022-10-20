@@ -7,6 +7,7 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use App\Models\Roles;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -18,7 +19,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rules\Password;
 
 class UserResource extends Resource
 {
@@ -43,15 +46,23 @@ class UserResource extends Resource
                 TextInput::make('email')
                     ->email()
                     ->required()
-                    ->unique(
-                        ignorable: fn (null |Model $record): null |Model => $record,
-                    ),
+                    ->unique(ignorable: fn (null |Model $record): null |Model => $record,),
+
+                TextInput::make('password')
+                    ->password()
+                    ->required()
+                    ->rule(Password::default())
+                    ->visible(fn (?User $record) => $record === null || !$record->exists),
+
+                TextInput::make('password_confirmation')
+                    ->required()
+                    ->password()
+                    ->same('password')
+                    ->dehydrated(false)
+                    ->visible(fn (?User $record) => $record === null || !$record->exists),
+
                 Select::make('role_id')
-                    ->options([
-                        '2' => 'Nurse',
-                        '3' => 'Doctor',
-                        '4' => 'Patient',
-                    ])
+                    ->options(Roles::all()->where('id', '!=', '1')->pluck('name', 'id'))
                     ->required()
                     ->label('Roles'),
             ]);
@@ -61,15 +72,30 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('role.name')->sortable()->searchable()->label('Roles'),
-                TextColumn::make('name')->sortable()->searchable(),
-                TextColumn::make('email')->sortable()->searchable(),
+                TextColumn::make('role.name')
+                    ->label('Roles'),
+                TextColumn::make('name'),
+                TextColumn::make('email'),
                 TextColumn::make('updated_at')
-                    ->sortable()
                     ->date()
             ])
             ->filters([
-                //
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from'),
+                        DatePicker::make('created_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -110,7 +136,8 @@ class UserResource extends Resource
                 ->where('role_id', 4);
         } else {
             // code here
-            return parent::getEloquentQuery();
+            return parent::getEloquentQuery()
+                ->where('role_id', '!=', 1);
         }
     }
 }

@@ -92,12 +92,12 @@ class AppointmentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')->sortable()->searchable()->toggleable(),
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable()->toggleable(),
-                Tables\Columns\TextColumn::make('gender')->toggleable(),
-                Tables\Columns\TextColumn::make('category')->toggleable(),
-                Tables\Columns\TextColumn::make('specification')->toggleable(),
-                Tables\Columns\TextColumn::make('doctor.name')->sortable()->searchable()->toggleable(),
+                Tables\Columns\TextColumn::make('user.name'),
+                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('gender'),
+                Tables\Columns\TextColumn::make('category'),
+                Tables\Columns\TextColumn::make('specification'),
+                Tables\Columns\TextColumn::make('doctor.name'),
                 Tables\Columns\TextColumn::make('date')
                     ->date(),
                 Tables\Columns\BadgeColumn::make('status')
@@ -105,7 +105,7 @@ class AppointmentResource extends Resource
                         'danger' => 'cancelled',
                         'warning' => 'pending',
                         'success' => 'success',
-                    ])->sortable()->searchable()->toggleable(),
+                    ]),
 
             ])
             ->filters([
