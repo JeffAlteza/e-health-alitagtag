@@ -18,6 +18,8 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -107,24 +109,29 @@ class DoctorScheduleResource extends Resource
                     })
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
                 Action::make('book')
-                    ->action(function (Appointment $record, array $data): void {
-                        $record->create([
-                            'name' => $data['name'],
-                            'gender' => $data['gender'],
-                            'birthday' => $data['birthday'],
-                            'phone_number' => $data['phone_number'],
-                            'category' => $data['category'],
-                            'specification' => $data['specification'],
-                            // 'date' => TextColumn::get,
-                            'status' => 'pending',
-                            'user_id' => auth()->user()->id,
-                            // 'doctor_id' => $data['doctor_id'],
-                        ]);
-                        Filament::notify(status: 'success', message: 'Appointment Successfully');
-                    })
+                ->modalWidth('lg')
+                ->icon('heroicon-s-document-text')
+                ->action(function (DoctorSchedule $record, array $data): void {
+
+                    //you can use $record for fill appointment columns
+                    Appointment::create([
+                        'name' => $data['name'],
+                        'gender' => $data['gender'],
+                        'birthday' => $data['birthday'],
+                        'phone_number' => $data['phone_number'],
+                        'category' => $data['category'],
+                        'specification' => $data['specification'],
+                        // 'date' => TextColumn::get,
+                        'status' => 'pending',
+                        'user_id' => auth()->user()->id,
+                        'doctor_id' => $record->doctor_id,
+                        'date' => $record->date,
+                    ]);
+                    Filament::notify(status: 'success', message: 'Appointment Successfully');
+                })
                     ->form([
                         TextInput::make('name')
                             ->default(auth()->user()->name)
@@ -157,10 +164,14 @@ class DoctorScheduleResource extends Resource
                                 'Senior' => 'Senior',
                                 'Other' => 'Other',
                             ])->required(),
-                        DatePicker::make('date')
-                            ->label('Appointment Date')
-                            ->required(),
-                    ]),
+                        // TextInput::make('doctor_id'),
+                            // ->required(),
+                        // DatePicker::make('date')
+                        //     ->label('Appointment Date')
+                        //     ->required(),
+                    ])
+                    ->modalHeading('Appointment')
+                    ->modalSubheading('Fill up all the corresponding fields'),
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),

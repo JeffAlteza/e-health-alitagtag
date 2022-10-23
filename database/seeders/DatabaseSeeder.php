@@ -27,18 +27,18 @@ class DatabaseSeeder extends Seeder
             'name' => 'Administrator',
             'guard_name'=>'web',
         ]);
-        Roles::factory()->create([
-            'name' => 'Nurse',
-            'guard_name'=>'web',
-        ]);
-        Roles::factory()->create([
-            'name' => 'Doctor',
-            'guard_name'=>'web',
-        ]);
-        Roles::factory()->create([
-            'name' => 'Patient',
-            'guard_name'=>'web',
-        ]);
+        // Roles::factory()->create([
+        //     'name' => 'Nurse',
+        //     'guard_name'=>'web',
+        // ]);
+        // Roles::factory()->create([
+        //     'name' => 'Doctor',
+        //     'guard_name'=>'web',
+        // ]);
+        // Roles::factory()->create([
+        //     'name' => 'Patient',
+        //     'guard_name'=>'web',
+        // ]);
         
 
         User::factory()->create([
@@ -46,35 +46,35 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'role_id'=>'1',
         ]);
-        User::factory()->create([
-            'name' => 'Nurse',
-            'email' => 'nurse@gmail.com',
-            'role_id'=>'2',
-        ]);
-        User::factory()->create([
-            'name' => 'Doctor Willie',
-            'email' => 'doctorwillie@gmail.com',
-            'role_id'=>'3',
-        ]);
-        User::factory()->create([
-            'name' => 'Doctor Jose',
-            'email' => 'doctorjose@gmail.com',
-            'role_id'=>'3',
-        ]);
-        User::factory()->create([
-            'name' => 'Patient',
-            'email' => 'patient@gmail.com',
-            'role_id'=>'4',
-        ]);
-        User::factory()->create([
-            'name' => 'Patient2',
-            'email' => 'patient2@gmail.com',
-            'role_id'=>'4',
-        ]);
-        User::factory()->create([
-            'name' => 'Patient3',
-            'email' => 'patient3@gmail.com',
-            'role_id'=>'4',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Nurse',
+        //     'email' => 'nurse@gmail.com',
+        //     'role_id'=>'2',
+        // ]);
+        // User::factory()->create([
+        //     'name' => 'Doctor Willie',
+        //     'email' => 'doctorwillie@gmail.com',
+        //     'role_id'=>'3',
+        // ]);
+        // User::factory()->create([
+        //     'name' => 'Doctor Jose',
+        //     'email' => 'doctorjose@gmail.com',
+        //     'role_id'=>'3',
+        // ]);
+        // User::factory()->create([
+        //     'name' => 'Patient',
+        //     'email' => 'patient@gmail.com',
+        //     'role_id'=>'4',
+        // ]);
+        // User::factory()->create([
+        //     'name' => 'Patient2',
+        //     'email' => 'patient2@gmail.com',
+        //     'role_id'=>'4',
+        // ]);
+        // User::factory()->create([
+        //     'name' => 'Patient3',
+        //     'email' => 'patient3@gmail.com',
+        //     'role_id'=>'4',
+        // ]);
     }
 }

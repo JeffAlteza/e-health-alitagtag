@@ -20,9 +20,19 @@ return [
         'intercept_gate' => 'before', // after
     ],
 
-    'filament_user' => [
+    'nurse' => [
         'enabled' => true,
-        'name' => 'filament_user',
+        'name' => 'nurse',
+    ],
+
+    'doctor' => [
+        'enabled' => true,
+        'name' => 'doctor',
+    ],
+
+    'patient' => [
+        'enabled' => true,
+        'name' => 'patient',
     ],
 
     'permission_prefixes' => [
@@ -57,7 +67,7 @@ return [
     ],
 
     'exclude' => [
-        'enabled' => false,
+        'enabled' => true,
 
         'pages' => [
             'Dashboard',

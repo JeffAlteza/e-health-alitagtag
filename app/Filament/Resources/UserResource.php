@@ -17,10 +17,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
 class UserResource extends Resource
@@ -52,13 +55,14 @@ class UserResource extends Resource
                     ->password()
                     ->required()
                     ->rule(Password::default())
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                     ->visible(fn (?User $record) => $record === null || !$record->exists),
 
                 TextInput::make('password_confirmation')
                     ->required()
                     ->password()
                     ->same('password')
-                    ->dehydrated(false)
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                     ->visible(fn (?User $record) => $record === null || !$record->exists),
 
                 Select::make('role_id')
@@ -77,9 +81,16 @@ class UserResource extends Resource
                 TextColumn::make('name'),
                 TextColumn::make('email'),
                 TextColumn::make('updated_at')
-                    ->date()
+                    ->date(),
+                // BadgeColumn::make('status')
+                //     ->colors([
+                //         'danger' => 'inactive',
+                //         'success' => 'active',
+                //     ]),
             ])
             ->filters([
+                // SelectFilter::make('role_id')
+                //     ->relationship('roles', 'id'),
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('created_from'),
@@ -136,8 +147,8 @@ class UserResource extends Resource
                 ->where('role_id', 4);
         } else {
             // code here
-            return parent::getEloquentQuery()
-                ->where('role_id', '!=', 1);
+            return parent::getEloquentQuery();
+                // ->where('role_id', '!=', 1);
         }
     }
 }

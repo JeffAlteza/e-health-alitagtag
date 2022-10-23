@@ -6,6 +6,7 @@ use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Models\Appointment;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -14,6 +15,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -38,7 +40,7 @@ class AppointmentResource extends Resource
                 TextInput::make('user_id')
                     ->default(auth()->user()->id)
                     ->disabled()
-                    ->hidden()
+                    // ->hidden()
                     ->required(),
                 Select::make('doctor_id')
                     ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
@@ -128,6 +130,16 @@ class AppointmentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Action::make('cancel')
+                ->icon('heroicon-s-x-circle')
+                ->color('danger')
+                    ->action(function (Appointment $record, array $data): void {
+                        $record->update([
+                            'status' => 'cancelled',
+                        ]);
+                        Filament::notify(status: 'success', message: 'Cancelled Appointment');
+                    }
+                        )
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -157,7 +169,7 @@ class AppointmentResource extends Resource
             return parent::getEloquentQuery()
                 ->where('doctor_id', auth()->user()->id)
                 ->count();
-        } else if (auth()->user()->role_id == 4) {
+        } else if (auth()->user()->role_id == 2) {
             return parent::getEloquentQuery()
                 ->where('user_id', auth()->user()->id)
                 ->count();
@@ -173,6 +185,9 @@ class AppointmentResource extends Resource
         if (auth()->user()->role_id == 3) {
             return parent::getEloquentQuery()
                 ->where('doctor_id', auth()->user()->id);
+        }if (auth()->user()->role_id == 2) {
+            return parent::getEloquentQuery()
+                ->where('user_id', auth()->user()->id);
         } else {
             // code here
             return parent::getEloquentQuery();
