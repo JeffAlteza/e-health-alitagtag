@@ -81,11 +81,11 @@ class AppointmentResource extends Resource
                     ->required(),
                 Select::make('status')
                     ->options([
-                        'cancelled' => 'Cancelled',
-                        'pending' => 'Pending',
-                        'success' => 'Success',
+                        'Cancelled' => 'Cancelled',
+                        'Pending' => 'Pending',
+                        'Success' => 'Success',
                     ])
-                    ->default('pending')
+                    ->default('Pending')
                     ->required(),
             ]);
     }
@@ -104,9 +104,9 @@ class AppointmentResource extends Resource
                     ->date(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([
-                        'danger' => 'cancelled',
-                        'warning' => 'pending',
-                        'success' => 'success',
+                        'danger' => 'Cancelled',
+                        'warning' => 'Pending',
+                        'success' => 'Success',
                     ]),
 
             ])
@@ -131,11 +131,12 @@ class AppointmentResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Action::make('cancel')
+                ->hidden(auth()->user()->role_id != 4)
                 ->icon('heroicon-s-x-circle')
                 ->color('danger')
                     ->action(function (Appointment $record, array $data): void {
                         $record->update([
-                            'status' => 'cancelled',
+                            'status' => 'Cancelled',
                         ]);
                         Filament::notify(status: 'success', message: 'Cancelled Appointment');
                     }

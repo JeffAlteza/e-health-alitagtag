@@ -17,35 +17,31 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call([
-        //     RolesSeeder::class,
-        //     UsersSeeder::class,
-        //     // AppointmentSeeder::class
-        // ]);
-
-        Roles::factory()->create([
-            'name' => 'Administrator',
-            'guard_name'=>'web',
+        $this->call([
+            RolesSeeder::class,
+            UsersSeeder::class,
+            AppointmentSeeder::class,
         ]);
+
+        // Roles::factory()->create([
+        //     'name' => 'Administrator',
+        // ]);
         // Roles::factory()->create([
         //     'name' => 'Nurse',
-        //     'guard_name'=>'web',
         // ]);
         // Roles::factory()->create([
         //     'name' => 'Doctor',
-        //     'guard_name'=>'web',
         // ]);
         // Roles::factory()->create([
         //     'name' => 'Patient',
-        //     'guard_name'=>'web',
         // ]);
         
 
-        User::factory()->create([
-            'name' => 'Administrator',
-            'email' => 'admin@gmail.com',
-            'role_id'=>'1',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Administrator',
+        //     'email' => 'admin@gmail.com',
+        //     'role_id'=>'1',
+        // ]);
         // User::factory()->create([
         //     'name' => 'Nurse',
         //     'email' => 'nurse@gmail.com',

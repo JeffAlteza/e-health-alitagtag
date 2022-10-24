@@ -24,7 +24,7 @@ class LatestAppointment extends BaseWidget
     protected function getTableColumns(): array
     {
         return [
-            TextColumn::make('date')->label('Appointment Date'),
+            TextColumn::make('date')->label('Appointment Date')->date(),
             TextColumn::make('name')->sortable()->searchable(),
             // TextColumn::make('gender'),
             TextColumn::make('category')->sortable()->searchable(),
@@ -32,9 +32,9 @@ class LatestAppointment extends BaseWidget
             TextColumn::make('doctor.name')->label('Doctor'),
             BadgeColumn::make('status')
                     ->colors([
-                        'danger' => 'cancelled',
-                        'warning' => 'pending',
-                        'success' => 'success',
+                        'danger' => 'Cancelled',
+                        'warning' => 'Pending',
+                        'success' => 'Success',
                     ])->sortable()->searchable()
         ];
     }
