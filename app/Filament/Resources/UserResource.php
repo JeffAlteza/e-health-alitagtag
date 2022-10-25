@@ -88,6 +88,7 @@ class UserResource extends Resource
                 //         'success' => 'active',
                 //     ]),
             ])
+            ->defaultSort('name','asc')
             ->filters([
                 // SelectFilter::make('role_id')
                 //     ->relationship('roles', 'id'),

@@ -16,9 +16,12 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Livewire;
 
 class AppointmentResource extends Resource
@@ -44,7 +47,8 @@ class AppointmentResource extends Resource
                     ->required(),
                 Select::make('doctor_id')
                     ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
-                    ->label('Doctor Name'),
+                    ->label('Doctor Name')
+                    ->disabled(auth()->user()->role_id = 4),
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -78,8 +82,10 @@ class AppointmentResource extends Resource
                     ])->required(),
                 DatePicker::make('date')
                     ->label('Appointment Date')
+                    ->disabled(auth()->user()->role_id = 4)
                     ->required(),
                 Select::make('status')
+                    ->disabled(auth()->user()->role_id = 4)
                     ->options([
                         'Cancelled' => 'Cancelled',
                         'Pending' => 'Pending',
@@ -112,6 +118,12 @@ class AppointmentResource extends Resource
             ])
             ->defaultSort('date','desc')
             ->filters([
+                SelectFilter::make('status')
+                    ->options([
+                        'Success' => 'Success',
+                        'Pending' => 'Pending',
+                        'Cancelled' => 'Cancelled',
+                    ]),
                 Filter::make('appointment_at')
                     ->form([
                         DatePicker::make('appointment_from'),
@@ -128,13 +140,15 @@ class AppointmentResource extends Resource
                                 fn (Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
                             );
                     })
+                
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                // ->hidden(auth()->user()->role_id == 4),
+                EditAction::make()
+                    ->disabled(fn (Appointment $record)=> auth()->user()->role_id == 4 && ($record->status == 'Success' || $record->status == 'Cancelled') ),
                 Action::make('cancel')
-                    // ->hidden(auth()->user()->role_id != 4)
-                    // ->disabled(fn (Livewire $ListAppointments) => $ListAppointments->record->status == 'Success')
+                    ->disabled(fn (Appointment $record)=> $record->status == 'Success' || $record->status == 'Cancelled')  
+                    ->hidden(auth()->user()->role_id != 4)
+                    ->requiresConfirmation()
                     ->icon('heroicon-s-x-circle')
                     ->color('danger')
                     ->action(
@@ -181,20 +195,22 @@ class AppointmentResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        // if role id of logged in user is 2, table must display all record with role id = 4
+        // if role id of logged in user is 4, table must display all record with role id = 4
         // else, display all record
-        if (auth()->user()->role_id == 4) {
-            return parent::getEloquentQuery()
-                ->where('user_id', auth()->user()->id);
-        }
-        if (auth()->user()->role_id == 2) {
-            return parent::getEloquentQuery()
-                ->where('user_id', auth()->user()->id);
-        } else {
-            // code here
-            return parent::getEloquentQuery();
-        }
+        
+        // if (auth()->user()->role_id == 4) {
+        //     return parent::getEloquentQuery()
+        //         ->where('user_id', auth()->user()->id);
+        //     // return Appointment::query()->where('user_id', auth()->user()->id);
+        // } 
+            return parent::getEloquentQuery()->withoutGlobalScopes();
+        
     }
-
-
+//     public static function getEloquentQuery(): Builder
+// {
+//     if (! Auth::user()->role_id==4) {
+//         return parent::getEloquentQuery()->where('user_id', Auth::id());
+//         }
+//     return parent::getEloquentQuery()->applyScopes();
+// }
 }

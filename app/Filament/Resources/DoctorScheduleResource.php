@@ -91,6 +91,7 @@ class DoctorScheduleResource extends Resource
                         'success' => 'available',
                     ])
             ])
+            ->defaultSort('date','desc')
             ->filters([
                 Filter::make('schedule_at')
                     ->form([
