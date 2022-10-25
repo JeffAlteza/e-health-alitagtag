@@ -38,4 +38,8 @@ class LatestAppointment extends BaseWidget
                     ])->sortable()->searchable()
         ];
     }
+    public static function canView(): bool
+    {
+        return auth()->user()->role_id != 4;
+    }
 }

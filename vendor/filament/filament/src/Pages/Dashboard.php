@@ -40,4 +40,6 @@ class Dashboard extends Page
     {
         return static::$title ?? __('filament::pages/dashboard.title');
     }
+
+
 }

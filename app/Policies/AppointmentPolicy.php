@@ -18,7 +18,7 @@ class AppointmentPolicy
      */
     public function viewAny(User $user)
     {
-        return auth()->user()->role_id == 1;
+        return auth()->user();
     }
 
     /**
@@ -30,7 +30,7 @@ class AppointmentPolicy
      */
     public function view(User $user, Appointment $appointment)
     {
-        return auth()->user()->role_id == 1;
+        return auth()->user();
     }
 
     /**
@@ -53,7 +53,7 @@ class AppointmentPolicy
      */
     public function update(User $user, Appointment $appointment)
     {
-        return auth()->user()->role_id == 1;
+        return auth()->user()->role_id != 4;
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Filament\Resources\DoctorScheduleResource\RelationManagers;
 use App\Models\Appointment;
 use App\Models\DoctorSchedule;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -35,7 +36,7 @@ class DoctorScheduleResource extends Resource
 
     protected static ?string $navigationGroup = "Manage";
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -112,26 +113,26 @@ class DoctorScheduleResource extends Resource
                 EditAction::make(),
                 DeleteAction::make(),
                 Action::make('book')
-                ->modalWidth('lg')
-                ->icon('heroicon-s-document-text')
-                ->action(function (DoctorSchedule $record, array $data): void {
+                    ->modalWidth('lg')
+                    ->icon('heroicon-s-document-text')
+                    ->action(function (DoctorSchedule $record, array $data): void {
 
-                    //you can use $record for fill appointment columns
-                    Appointment::create([
-                        'name' => $data['name'],
-                        'gender' => $data['gender'],
-                        'birthday' => $data['birthday'],
-                        'phone_number' => $data['phone_number'],
-                        'category' => $data['category'],
-                        'specification' => $data['specification'],
-                        // 'date' => TextColumn::get,
-                        'status' => 'pending',
-                        'user_id' => auth()->user()->id,
-                        'doctor_id' => $record->doctor_id,
-                        'date' => $record->date,
-                    ]);
-                    Filament::notify(status: 'success', message: 'Appointment Successfully');
-                })
+                        //you can use $record for fill appointment columns
+                        Appointment::create([
+                            'name' => $data['name'],
+                            'gender' => $data['gender'],
+                            'birthday' => $data['birthday'],
+                            'phone_number' => $data['phone_number'],
+                            'category' => $data['category'],
+                            'specification' => $data['specification'],
+                            // 'date' => TextColumn::get,
+                            'status' => 'Pending',
+                            'user_id' => auth()->user()->id,
+                            'doctor_id' => $record->doctor_id,
+                            'date' => $record->date,
+                        ]);
+                        Filament::notify(status: 'success', message: 'Appointment Successfully');
+                    })
                     ->form([
                         TextInput::make('name')
                             ->default(auth()->user()->name)
@@ -165,7 +166,7 @@ class DoctorScheduleResource extends Resource
                                 'Other' => 'Other',
                             ])->required(),
                         // TextInput::make('doctor_id'),
-                            // ->required(),
+                        // ->required(),
                         // DatePicker::make('date')
                         //     ->label('Appointment Date')
                         //     ->required(),
@@ -196,6 +197,30 @@ class DoctorScheduleResource extends Resource
 
     protected static function getNavigationBadge(): ?string
     {
-        return self::getModel()::count();
+        $date = Carbon::now();
+
+        if (auth()->user()->role_id == 4) {
+            return parent::getEloquentQuery()
+                ->whereDate('date', '>=', $date)
+
+                ->count();
+        } else {
+            return self::getModel()::count();
+        }
+        // return self::getModel()::count();
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        // if role id of logged in user is 2, table must display all record with role id = 4
+        // else, display all record
+        $date = Carbon::now();
+        if (auth()->user()->role_id == 4) {
+            return parent::getEloquentQuery()
+                ->whereDate('date', '>=', $date);
+        } else {
+            // code here
+            return parent::getEloquentQuery();
+        }
     }
 }

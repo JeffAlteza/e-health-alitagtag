@@ -13,8 +13,6 @@ class FilamentBreezy
 
     protected static array $passwordRules;
 
-    protected static ?int $navigationSort = 3;
-
     public function __construct(Google2FA $engine, Repository $cache = null)
     {
         $this->engine = $engine;

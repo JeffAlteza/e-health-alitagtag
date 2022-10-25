@@ -19,6 +19,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Livewire\Livewire;
 
 class AppointmentResource extends Resource
 {
@@ -30,7 +31,7 @@ class AppointmentResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
 
     public static function form(Form $form): Form
@@ -39,8 +40,7 @@ class AppointmentResource extends Resource
             ->schema([
                 TextInput::make('user_id')
                     ->default(auth()->user()->id)
-                    ->disabled()
-                    // ->hidden()
+                    ->hidden()
                     ->required(),
                 Select::make('doctor_id')
                     ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
@@ -110,6 +110,7 @@ class AppointmentResource extends Resource
                     ]),
 
             ])
+            ->defaultSort('date','desc')
             ->filters([
                 Filter::make('appointment_at')
                     ->form([
@@ -130,17 +131,20 @@ class AppointmentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                // ->hidden(auth()->user()->role_id == 4),
                 Action::make('cancel')
-                ->hidden(auth()->user()->role_id != 4)
-                ->icon('heroicon-s-x-circle')
-                ->color('danger')
-                    ->action(function (Appointment $record, array $data): void {
-                        $record->update([
-                            'status' => 'Cancelled',
-                        ]);
-                        Filament::notify(status: 'success', message: 'Cancelled Appointment');
-                    }
-                        )
+                    // ->hidden(auth()->user()->role_id != 4)
+                    // ->disabled(fn (Livewire $ListAppointments) => $ListAppointments->record->status == 'Success')
+                    ->icon('heroicon-s-x-circle')
+                    ->color('danger')
+                    ->action(
+                        function (Appointment $record, array $data): void {
+                            $record->update([
+                                'status' => 'Cancelled',
+                            ]);
+                            Filament::notify(status: 'success', message: 'Cancelled Appointment');
+                        }
+                    )
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -166,11 +170,7 @@ class AppointmentResource extends Resource
     protected static function getNavigationBadge(): ?string
     {
 
-        if (auth()->user()->role_id == 3) {
-            return parent::getEloquentQuery()
-                ->where('doctor_id', auth()->user()->id)
-                ->count();
-        } else if (auth()->user()->role_id == 2) {
+        if (auth()->user()->role_id == 4) {
             return parent::getEloquentQuery()
                 ->where('user_id', auth()->user()->id)
                 ->count();
@@ -183,10 +183,11 @@ class AppointmentResource extends Resource
     {
         // if role id of logged in user is 2, table must display all record with role id = 4
         // else, display all record
-        if (auth()->user()->role_id == 3) {
+        if (auth()->user()->role_id == 4) {
             return parent::getEloquentQuery()
-                ->where('doctor_id', auth()->user()->id);
-        }if (auth()->user()->role_id == 2) {
+                ->where('user_id', auth()->user()->id);
+        }
+        if (auth()->user()->role_id == 2) {
             return parent::getEloquentQuery()
                 ->where('user_id', auth()->user()->id);
         } else {
@@ -194,4 +195,6 @@ class AppointmentResource extends Resource
             return parent::getEloquentQuery();
         }
     }
+
+
 }

@@ -18,8 +18,7 @@ class DoctorSchedulePolicy
      */
     public function viewAny(User $user)
     {
-        return auth()->user()->role_id == 1;
-
+        return auth()->user();
     }
 
     /**
@@ -31,8 +30,7 @@ class DoctorSchedulePolicy
      */
     public function view(User $user, DoctorSchedule $doctorSchedule)
     {
-        return auth()->user()->role_id == 1;
-
+        return auth()->user();
     }
 
     /**
@@ -149,5 +147,4 @@ class DoctorSchedulePolicy
     {
         return auth()->user()->role_id == 1;
     }
-
 }

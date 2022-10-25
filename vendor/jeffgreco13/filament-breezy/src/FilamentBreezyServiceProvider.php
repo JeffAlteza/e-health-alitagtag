@@ -14,7 +14,7 @@ use Spatie\LaravelPackageTools\Package;
 
 class FilamentBreezyServiceProvider extends PluginServiceProvider
 {
-    protected static ?int $navigationSort = 3;
+
 
     public function configurePackage(Package $package): void
     {
