@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Livewire;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 class AppointmentResource extends Resource
 {
     protected static ?string $model = Appointment::class;
@@ -165,9 +166,10 @@ class AppointmentResource extends Resource
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
+                // Actions\Tables\ExportAction::make(),
             ])
             ->headerActions([
-                FilamentExportHeaderAction::make('export'),
+                FilamentExportHeaderAction::make('export')
             ]);
     }
 

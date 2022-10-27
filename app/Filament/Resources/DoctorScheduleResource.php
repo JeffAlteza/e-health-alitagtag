@@ -27,6 +27,7 @@ use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Savannabits\Flatpickr\Flatpickr;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 
 class DoctorScheduleResource extends Resource
 {
@@ -178,6 +179,9 @@ class DoctorScheduleResource extends Resource
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->headerActions([
+                FilamentExportHeaderAction::make('export')
             ]);
     }
 
