@@ -66,7 +66,7 @@ class UserResource extends Resource
                     ->visible(fn (?User $record) => $record === null || !$record->exists),
 
                 Select::make('role_id')
-                    ->options(Roles::all()->where('id', '!=', '1')->pluck('name', 'id'))
+                    ->relationship('role', 'name')
                     ->required()
                     ->label('Roles'),
             ]);
@@ -88,10 +88,10 @@ class UserResource extends Resource
                 //         'success' => 'active',
                 //     ]),
             ])
-            ->defaultSort('name','asc')
+            ->defaultSort('name', 'asc')
             ->filters([
-                // SelectFilter::make('role_id')
-                //     ->relationship('roles', 'id'),
+                SelectFilter::make('role_id')
+                    ->relationship('role', 'name'),
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('created_from'),
@@ -149,7 +149,7 @@ class UserResource extends Resource
         } else {
             // code here
             return parent::getEloquentQuery();
-                // ->where('role_id', '!=', 1);
+            // ->where('role_id', '!=', 1);
         }
     }
 }

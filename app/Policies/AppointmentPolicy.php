@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Appointment;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AppointmentPolicy
@@ -18,6 +18,7 @@ class AppointmentPolicy
      */
     public function viewAny(User $user)
     {
+        //
         return auth()->user();
     }
 
@@ -31,6 +32,7 @@ class AppointmentPolicy
     public function view(User $user, Appointment $appointment)
     {
         return auth()->user();
+
     }
 
     /**
@@ -41,7 +43,8 @@ class AppointmentPolicy
      */
     public function create(User $user)
     {
-        return auth()->user();
+        // return auth()->user();
+        // return false;
     }
 
     /**
@@ -53,8 +56,8 @@ class AppointmentPolicy
      */
     public function update(User $user, Appointment $appointment)
     {
-        // return auth()->user();
         return auth()->user();
+
     }
 
     /**
@@ -66,18 +69,33 @@ class AppointmentPolicy
      */
     public function delete(User $user, Appointment $appointment)
     {
+        // return auth()->user();
+        return auth()->user()->role_id == 1;
+
+    }
+    /**
+     * Determine whether the user can restore the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Appointment  $appointment
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function restore(User $user, Appointment $appointment)
+    {
         return auth()->user();
+
     }
 
     /**
-     * Determine whether the user can bulk delete.
+     * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
+     * @param  \App\Models\Appointment  $appointment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function deleteAny(User $user)
+    public function forceDelete(User $user, Appointment $appointment)
     {
         return auth()->user();
-    }
 
+    }
 }

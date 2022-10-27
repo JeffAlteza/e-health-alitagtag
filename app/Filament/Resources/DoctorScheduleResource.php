@@ -114,6 +114,7 @@ class DoctorScheduleResource extends Resource
                 EditAction::make(),
                 DeleteAction::make(),
                 Action::make('book')
+                    ->disabled(fn (DoctorSchedule $record) => $record->status == 'unavailable')
                     ->modalWidth('lg')
                     ->icon('heroicon-s-document-text')
                     ->action(function (DoctorSchedule $record, array $data): void {

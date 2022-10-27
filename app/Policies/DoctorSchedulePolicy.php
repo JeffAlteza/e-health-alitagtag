@@ -41,7 +41,7 @@ class DoctorSchedulePolicy
      */
     public function create(User $user)
     {
-        return auth()->user()->role_id == 1;
+        return auth()->user()->role_id != 4;
     }
 
     /**

@@ -58,7 +58,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Roles::class);
     }
 
-    public function appointments()
+    public function appointments_user()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
+    public function appointments_doctor()
     {
         return $this->hasMany(Appointment::class);
     }
