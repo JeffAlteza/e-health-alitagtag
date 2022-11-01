@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Savannabits\Flatpickr\Flatpickr;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use Filament\Forms\Components\Card;
 
 class DoctorScheduleResource extends Resource
 {
@@ -39,11 +40,14 @@ class DoctorScheduleResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    protected static ?string $recordTitleAttribute = 'doctor_id';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Select::make('doctor_id')
+                Card::make()->schema([
+                    Select::make('doctor_id')
                     ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
                     ->label('Doctor Name')
                     ->required(),
@@ -74,6 +78,7 @@ class DoctorScheduleResource extends Resource
                         'available' => 'Available',
                         'unavailable' => 'Unavailable',
                     ])->required(),
+                ])->columns(2),
             ]);
     }
 
@@ -181,7 +186,7 @@ class DoctorScheduleResource extends Resource
                 // Tables\Actions\DeleteBulkAction::make(),
             ])
             ->headerActions([
-                FilamentExportHeaderAction::make('export')
+                FilamentExportHeaderAction::make('export')->hidden(auth()->user()->role_id == 4)
             ]);
     }
 

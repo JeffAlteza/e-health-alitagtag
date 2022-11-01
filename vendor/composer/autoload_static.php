@@ -869,6 +869,7 @@ class ComposerStaticInitedc93a30aaa33c3213d855b420c64d34
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Models\\Appointment' => __DIR__ . '/../..' . '/app/Models/Appointment.php',
         'App\\Models\\DoctorSchedule' => __DIR__ . '/../..' . '/app/Models/DoctorSchedule.php',
+        'App\\Models\\PatientRecord' => __DIR__ . '/../..' . '/app/Models/PatientRecord.php',
         'App\\Models\\Roles' => __DIR__ . '/../..' . '/app/Models/Roles.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Policies\\AppointmentPolicy' => __DIR__ . '/../..' . '/app/Policies/AppointmentPolicy.php',

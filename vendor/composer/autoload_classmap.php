@@ -86,6 +86,7 @@ return array(
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Models\\Appointment' => $baseDir . '/app/Models/Appointment.php',
     'App\\Models\\DoctorSchedule' => $baseDir . '/app/Models/DoctorSchedule.php',
+    'App\\Models\\PatientRecord' => $baseDir . '/app/Models/PatientRecord.php',
     'App\\Models\\Roles' => $baseDir . '/app/Models/Roles.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Policies\\AppointmentPolicy' => $baseDir . '/app/Policies/AppointmentPolicy.php',

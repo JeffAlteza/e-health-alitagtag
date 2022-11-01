@@ -7,6 +7,7 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use App\Models\Roles;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
@@ -43,7 +44,8 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
+                Card::make()->schema([
+                    TextInput::make('name')
                     ->required(),
 
                 TextInput::make('email')
@@ -69,6 +71,7 @@ class UserResource extends Resource
                     ->relationship('role', 'name')
                     ->required()
                     ->label('Roles'),
+                ])->columns(2)
             ]);
     }
 

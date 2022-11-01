@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Livewire;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use Filament\Forms\Components\Card;
+
 class AppointmentResource extends Resource
 {
     protected static ?string $model = Appointment::class;
@@ -41,7 +43,8 @@ class AppointmentResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('user_id')
+                Card::make()->schema([
+                    TextInput::make('user_id')
                     ->default(auth()->user()->id)
                     ->hidden()
                     ->required(),
@@ -97,6 +100,7 @@ class AppointmentResource extends Resource
                     ])
                     ->default('Pending')
                     ->required(),
+                ])->columns(2),
             ]);
     }
 
