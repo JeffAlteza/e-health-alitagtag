@@ -18,7 +18,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_user');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -29,7 +29,7 @@ class UserPolicy
      */
     public function view(User $user)
     {
-        return $user->can('view_user');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -40,7 +40,7 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_user');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -51,7 +51,7 @@ class UserPolicy
      */
     public function update(User $user)
     {
-        return $user->can('update_user');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -62,7 +62,7 @@ class UserPolicy
      */
     public function delete(User $user)
     {
-        return $user->can('delete_user');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -73,72 +73,6 @@ class UserPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_user');
-    }
-
-    /**
-     * Determine whether the user can permanently delete.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(User $user)
-    {
-        return $user->can('force_delete_user');
-    }
-
-    /**
-     * Determine whether the user can permanently bulk delete.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDeleteAny(User $user)
-    {
-        return $user->can('force_delete_any_user');
-    }
-
-    /**
-     * Determine whether the user can restore.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(User $user)
-    {
-        return $user->can('restore_user');
-    }
-
-    /**
-     * Determine whether the user can bulk restore.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restoreAny(User $user)
-    {
-        return $user->can('restore_any_user');
-    }
-
-    /**
-     * Determine whether the user can bulk restore.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function replicate(User $user)
-    {
-        return $user->can('replicate_user');
-    }
-
-    /**
-     * Determine whether the user can reorder.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function reorder(User $user)
-    {
-        return $user->can('reorder_user');
+        return auth()->user()->role_id == 1;
     }
 }

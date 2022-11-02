@@ -19,4 +19,8 @@ class AppointmentOverview extends BaseWidget
                 Card::make('Pending Today', Appointment::where('status','=', 'pending')->where('date','=', $date)->count()),
         ];
     }
+    public static function canView(): bool
+    {
+        return auth()->user()->role_id != 4;
+    }
 }

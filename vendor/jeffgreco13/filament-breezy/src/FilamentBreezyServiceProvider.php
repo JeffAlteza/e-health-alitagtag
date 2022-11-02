@@ -14,6 +14,8 @@ use Spatie\LaravelPackageTools\Package;
 
 class FilamentBreezyServiceProvider extends PluginServiceProvider
 {
+
+
     public function configurePackage(Package $package): void
     {
         $package

@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
-        "bezhansalleh/filament-shield": "^2.2",
+        "alperenersoy/filament-export": "^0.2.0",
         "doctrine/dbal": "^3.4",
         "filament/filament": "^2.0",
         "flowframe/laravel-trend": "^0.1.1",
@@ -15,9 +15,12 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "psr/simple-cache": "^2.0",
+        "pxlrbt/filament-excel": "^1.1",
         "savannabits/filament-flatpickr": "^1.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.7",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.0.1",

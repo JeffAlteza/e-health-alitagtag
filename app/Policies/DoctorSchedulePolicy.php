@@ -18,7 +18,7 @@ class DoctorSchedulePolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_doctor::schedule');
+        return auth()->user();
     }
 
     /**
@@ -30,7 +30,7 @@ class DoctorSchedulePolicy
      */
     public function view(User $user, DoctorSchedule $doctorSchedule)
     {
-        return $user->can('view_doctor::schedule');
+        return auth()->user();
     }
 
     /**
@@ -41,7 +41,7 @@ class DoctorSchedulePolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_doctor::schedule');
+        return auth()->user()->role_id != 4;
     }
 
     /**
@@ -53,7 +53,7 @@ class DoctorSchedulePolicy
      */
     public function update(User $user, DoctorSchedule $doctorSchedule)
     {
-        return $user->can('update_doctor::schedule');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -65,7 +65,7 @@ class DoctorSchedulePolicy
      */
     public function delete(User $user, DoctorSchedule $doctorSchedule)
     {
-        return $user->can('delete_doctor::schedule');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -76,7 +76,7 @@ class DoctorSchedulePolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_doctor::schedule');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -88,7 +88,7 @@ class DoctorSchedulePolicy
      */
     public function forceDelete(User $user, DoctorSchedule $doctorSchedule)
     {
-        return $user->can('force_delete_doctor::schedule');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -99,7 +99,7 @@ class DoctorSchedulePolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('force_delete_any_doctor::schedule');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -111,7 +111,7 @@ class DoctorSchedulePolicy
      */
     public function restore(User $user, DoctorSchedule $doctorSchedule)
     {
-        return $user->can('restore_doctor::schedule');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -122,7 +122,7 @@ class DoctorSchedulePolicy
      */
     public function restoreAny(User $user)
     {
-        return $user->can('restore_any_doctor::schedule');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -134,7 +134,7 @@ class DoctorSchedulePolicy
      */
     public function replicate(User $user, DoctorSchedule $doctorSchedule)
     {
-        return $user->can('replicate_doctor::schedule');
+        return auth()->user()->role_id == 1;
     }
 
     /**
@@ -145,7 +145,6 @@ class DoctorSchedulePolicy
      */
     public function reorder(User $user)
     {
-        return $user->can('reorder_doctor::schedule');
+        return auth()->user()->role_id == 1;
     }
-
 }

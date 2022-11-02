@@ -14,7 +14,6 @@ class Roles extends Model
     protected $fillable = [
         'id',
         'name',
-        'guard_name'
     ];
 
     // public function user():BelongsTo

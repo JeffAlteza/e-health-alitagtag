@@ -7,6 +7,7 @@ use App\Filament\Resources\DoctorScheduleResource\RelationManagers;
 use App\Models\Appointment;
 use App\Models\DoctorSchedule;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -26,6 +27,8 @@ use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Savannabits\Flatpickr\Flatpickr;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use Filament\Forms\Components\Card;
 
 class DoctorScheduleResource extends Resource
 {
@@ -35,13 +38,16 @@ class DoctorScheduleResource extends Resource
 
     protected static ?string $navigationGroup = "Manage";
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $recordTitleAttribute = 'doctor_id';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Select::make('doctor_id')
+                Card::make()->schema([
+                    Select::make('doctor_id')
                     ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
                     ->label('Doctor Name')
                     ->required(),
@@ -72,6 +78,7 @@ class DoctorScheduleResource extends Resource
                         'available' => 'Available',
                         'unavailable' => 'Unavailable',
                     ])->required(),
+                ])->columns(2),
             ]);
     }
 
@@ -90,6 +97,7 @@ class DoctorScheduleResource extends Resource
                         'success' => 'available',
                     ])
             ])
+            ->defaultSort('date','desc')
             ->filters([
                 Filter::make('schedule_at')
                     ->form([
@@ -112,26 +120,27 @@ class DoctorScheduleResource extends Resource
                 EditAction::make(),
                 DeleteAction::make(),
                 Action::make('book')
-                ->modalWidth('lg')
-                ->icon('heroicon-s-document-text')
-                ->action(function (DoctorSchedule $record, array $data): void {
+                    ->disabled(fn (DoctorSchedule $record) => $record->status == 'unavailable')
+                    ->modalWidth('lg')
+                    ->icon('heroicon-s-document-text')
+                    ->action(function (DoctorSchedule $record, array $data): void {
 
-                    //you can use $record for fill appointment columns
-                    Appointment::create([
-                        'name' => $data['name'],
-                        'gender' => $data['gender'],
-                        'birthday' => $data['birthday'],
-                        'phone_number' => $data['phone_number'],
-                        'category' => $data['category'],
-                        'specification' => $data['specification'],
-                        // 'date' => TextColumn::get,
-                        'status' => 'pending',
-                        'user_id' => auth()->user()->id,
-                        'doctor_id' => $record->doctor_id,
-                        'date' => $record->date,
-                    ]);
-                    Filament::notify(status: 'success', message: 'Appointment Successfully');
-                })
+                        //you can use $record for fill appointment columns
+                        Appointment::create([
+                            'name' => $data['name'],
+                            'gender' => $data['gender'],
+                            'birthday' => $data['birthday'],
+                            'phone_number' => $data['phone_number'],
+                            'category' => $data['category'],
+                            'specification' => $data['specification'],
+                            // 'date' => TextColumn::get,
+                            'status' => 'Pending',
+                            'user_id' => auth()->user()->id,
+                            'doctor_id' => $record->doctor_id,
+                            'date' => $record->date,
+                        ]);
+                        Filament::notify(status: 'success', message: 'Appointment Successfully');
+                    })
                     ->form([
                         TextInput::make('name')
                             ->default(auth()->user()->name)
@@ -165,7 +174,7 @@ class DoctorScheduleResource extends Resource
                                 'Other' => 'Other',
                             ])->required(),
                         // TextInput::make('doctor_id'),
-                            // ->required(),
+                        // ->required(),
                         // DatePicker::make('date')
                         //     ->label('Appointment Date')
                         //     ->required(),
@@ -175,6 +184,9 @@ class DoctorScheduleResource extends Resource
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->headerActions([
+                FilamentExportHeaderAction::make('export')->hidden(auth()->user()->role_id == 4)
             ]);
     }
 
@@ -196,6 +208,30 @@ class DoctorScheduleResource extends Resource
 
     protected static function getNavigationBadge(): ?string
     {
-        return self::getModel()::count();
+        $date = Carbon::now();
+
+        if (auth()->user()->role_id == 4) {
+            return parent::getEloquentQuery()
+                ->whereDate('date', '>=', $date)
+
+                ->count();
+        } else {
+            return self::getModel()::count();
+        }
+        // return self::getModel()::count();
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        // if role id of logged in user is 2, table must display all record with role id = 4
+        // else, display all record
+        $date = Carbon::now();
+        if (auth()->user()->role_id == 4) {
+            return parent::getEloquentQuery()
+                ->whereDate('date', '>=', $date);
+        } else {
+            // code here
+            return parent::getEloquentQuery();
+        }
     }
 }
