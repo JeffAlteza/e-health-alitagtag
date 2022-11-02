@@ -130,7 +130,7 @@ class PatientRecordResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()->color('warning'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
