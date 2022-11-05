@@ -17,7 +17,8 @@
         "laravel/tinker": "^2.7",
         "psr/simple-cache": "^2.0",
         "pxlrbt/filament-excel": "^1.1",
-        "savannabits/filament-flatpickr": "^1.0"
+        "savannabits/filament-flatpickr": "^1.0",
+        "spatie/laravel-analytics": "^4.1"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",

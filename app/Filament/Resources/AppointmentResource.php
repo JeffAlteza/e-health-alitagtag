@@ -25,6 +25,9 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Livewire;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use Filament\Forms\Components\Card;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\TextColumn;
 
 class AppointmentResource extends Resource
 {
@@ -108,15 +111,15 @@ class AppointmentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name'),
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('gender'),
-                Tables\Columns\TextColumn::make('category'),
-                Tables\Columns\TextColumn::make('specification'),
-                Tables\Columns\TextColumn::make('doctor.name'),
-                Tables\Columns\TextColumn::make('date')
+                TextColumn::make('user.name'),
+                TextColumn::make('name'),
+                // TextColumn::make('gender'),
+                TextColumn::make('category'),
+                // TextColumn::make('specification'),
+                TextColumn::make('doctor.name'),
+                TextColumn::make('date')
                     ->date(),
-                Tables\Columns\BadgeColumn::make('status')
+                BadgeColumn::make('status')
                     ->colors([
                         'danger' => 'Cancelled',
                         'warning' => 'Pending',
@@ -124,7 +127,7 @@ class AppointmentResource extends Resource
                     ]),
 
             ])
-            ->defaultSort('date', 'desc')
+            ->defaultSort('date')
             ->filters([
                 SelectFilter::make('status')
                     ->options([
@@ -151,6 +154,7 @@ class AppointmentResource extends Resource
 
             ])
             ->actions([
+                ViewAction::make()->color('warning'),
                 EditAction::make()
                     ->disabled(fn (Appointment $record) => auth()->user()->role_id == 4 && ($record->status == 'Success' || $record->status == 'Cancelled')),
                 Action::make('cancel')

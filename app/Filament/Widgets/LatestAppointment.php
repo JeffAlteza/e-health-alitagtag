@@ -13,7 +13,18 @@ use Illuminate\Database\Eloquent\Builder;
 
 class LatestAppointment extends BaseWidget
 {
+    protected static ?int $sort = 4;
     protected int | string |array $columnSpan = 'full'; 
+
+    protected function getDefaultTableSortColumn(): ?string
+    {
+        return 'date';
+    }
+
+    protected function getDefaultTableSortDirection(): ?string
+    {
+        return 'asc';
+    }
 
     protected function getTableQuery(): Builder
     {

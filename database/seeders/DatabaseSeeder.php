@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             UsersSeeder::class,
             AppointmentSeeder::class,
+            PatientRecordSeeder::class,
         ]);
 
         // Roles::factory()->create([

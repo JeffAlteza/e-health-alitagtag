@@ -53,8 +53,8 @@ class PatientRecordResource extends Resource
                             TextInput::make('address')
                                 ->columnSpan('full')
                                 ->required(),
-                            TextInput::make('height')->numeric(),
-                            TextInput::make('weight')->numeric(),
+                            TextInput::make('height')->numeric()->label('Height(cm)'),
+                            TextInput::make('weight')->numeric()->label('Weight(kg)'),
                             DatePicker::make('date_of_consultation')
                                 ->required(),
                             TextInput::make('time_of_consultation')
@@ -104,7 +104,6 @@ class PatientRecordResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name'),
-                TextColumn::make('address'),
                 TextColumn::make('age'),
                 TextColumn::make('nature_of_visit'),
                 TextColumn::make('purpose_of_visit'),

@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('category');
             $table->date('date');
-            $table->time('time_start');
-            $table->time('time_end');
+            $table->string('time_start');
+            $table->string('time_end');
             $table->string('status');
             $table->timestamps();
         });

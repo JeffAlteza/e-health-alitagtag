@@ -65,12 +65,10 @@ class DoctorScheduleResource extends Resource
                     ->required(),
 
                 // Flatpickr::make('read_at')->default(now())->enableTime(),
-                TimePicker::make('time_start')
-                    ->withoutSeconds()
+                TextInput::make('time_start')
                     ->required(),
 
-                TimePicker::make('time_end')
-                    ->withoutSeconds()
+                TextInput::make('time_end')
                     ->required(),
 
                 Select::make('status')
