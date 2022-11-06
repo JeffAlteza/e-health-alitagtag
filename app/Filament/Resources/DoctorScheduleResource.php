@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Savannabits\Flatpickr\Flatpickr;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use Filament\Forms\Components\Card;
+use Filament\Notifications\Notification;
 
 class DoctorScheduleResource extends Resource
 {
@@ -48,34 +49,34 @@ class DoctorScheduleResource extends Resource
             ->schema([
                 Card::make()->schema([
                     Select::make('doctor_id')
-                    ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
-                    ->label('Doctor Name')
-                    ->required(),
+                        ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
+                        ->label('Doctor Name')
+                        ->required(),
 
-                Select::make('category')
-                    ->options([
-                        'Dental' => 'Dental',
-                        'Check Up' => 'Check Up',
-                        'Medical' => 'Medical',
-                        'Other' => 'Other',
-                    ])->required(),
+                    Select::make('category')
+                        ->options([
+                            'Dental' => 'Dental',
+                            'Check Up' => 'Check Up',
+                            'Medical' => 'Medical',
+                            'Other' => 'Other',
+                        ])->required(),
 
-                DatePicker::make('date')
-                    ->default(now())
-                    ->required(),
+                    DatePicker::make('date')
+                        ->default(now())
+                        ->required(),
 
-                // Flatpickr::make('read_at')->default(now())->enableTime(),
-                TextInput::make('time_start')
-                    ->required(),
+                    // Flatpickr::make('read_at')->default(now())->enableTime(),
+                    TextInput::make('time_start')
+                        ->required(),
 
-                TextInput::make('time_end')
-                    ->required(),
+                    TextInput::make('time_end')
+                        ->required(),
 
-                Select::make('status')
-                    ->options([
-                        'available' => 'Available',
-                        'unavailable' => 'Unavailable',
-                    ])->required(),
+                    Select::make('status')
+                        ->options([
+                            'available' => 'Available',
+                            'unavailable' => 'Unavailable',
+                        ])->required(),
                 ])->columns(2),
             ]);
     }
@@ -95,7 +96,7 @@ class DoctorScheduleResource extends Resource
                         'primary' => 'available',
                     ])
             ])
-            ->defaultSort('date','desc')
+            ->defaultSort('date', 'desc')
             ->filters([
                 Filter::make('schedule_at')
                     ->form([
@@ -122,7 +123,7 @@ class DoctorScheduleResource extends Resource
                     ->modalWidth('lg')
                     ->icon('heroicon-s-document-text')
                     ->action(function (DoctorSchedule $record, array $data): void {
-
+                        
                         //you can use $record for fill appointment columns
                         Appointment::create([
                             'name' => $data['name'],
@@ -137,6 +138,7 @@ class DoctorScheduleResource extends Resource
                             'doctor_id' => $record->doctor_id,
                             'date' => $record->date,
                         ]);
+                        // $appointment = $this->record;
                         Filament::notify(status: 'success', message: 'Appointment Successfully');
                     })
                     ->form([

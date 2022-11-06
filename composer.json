@@ -16,6 +16,7 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "psr/simple-cache": "^2.0",
+        "pusher/pusher-php-server": "^7.2",
         "pxlrbt/filament-excel": "^1.1",
         "savannabits/filament-flatpickr": "^1.0",
         "spatie/laravel-analytics": "^4.1"

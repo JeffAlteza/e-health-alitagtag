@@ -50,12 +50,14 @@ class AppointmentResource extends Resource
             ->schema([
                 Card::make()->schema([
                     TextInput::make('user_id')
-                    ->default(auth()->user()->id)
-                    ->hidden()
-                    ->required(),
-                // TextInput::make('doctor.name')
-                //     ->disabled()
+                    ->default(auth()->user()->id),
+                    // ->hidden(),
+                // Select::make('doctor.name')
                 //     ->required(),
+                Select::make('doctor_id')
+                ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
+                ->label('Doctor Name')
+                ->required(),
                 // Select::make('doctor_id')
                 // ->relationship('user','name')
                 // ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
@@ -136,6 +138,7 @@ class AppointmentResource extends Resource
                         'Success' => 'Success',
                         'Pending' => 'Pending',
                         'Cancelled' => 'Cancelled',
+                        'Approve' => 'Approve',
                     ]),
                 Filter::make('appointment_at')
                     ->form([
@@ -179,6 +182,8 @@ class AppointmentResource extends Resource
             ])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
+                ->label('Export All')
+                ->hidden(auth()->user()->role_id == 4)
             ]);
     }
 
