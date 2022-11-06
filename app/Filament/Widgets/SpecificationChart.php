@@ -51,4 +51,9 @@ class SpecificationChart extends DoughnutChartWidget
             'labels' => ['Infant', 'Child', 'Teen', 'Adult', 'Senior'],
         ];
     }
+    public static function canView(): bool
+    {
+        // return false;
+        return auth()->user()->role_id != 4;
+    }
 }
