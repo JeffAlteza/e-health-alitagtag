@@ -8,7 +8,7 @@ use Filament\Widgets\DoughnutChartWidget;
 class SpecificationChart extends DoughnutChartWidget
 {
     protected static ?string $heading = 'Specification per Month';
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 4;
     protected static ?string $maxHeight = '275px';
     // protected static ?string $pollingInterval = '5s';
     protected function getData(): array

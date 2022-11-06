@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Models\Appointment;
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Livewire;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use Carbon\Carbon;
 use Filament\Forms\Components\Card;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\BadgeColumn;
@@ -123,11 +125,11 @@ class AppointmentResource extends Resource
                     ->colors([
                         'danger' => 'Cancelled',
                         'warning' => 'Pending',
-                        'success' => 'Success',
+                        'primary' => 'Success',
                     ]),
 
             ])
-            ->defaultSort('date')
+            ->defaultSort('date', 'desc')
             ->filters([
                 SelectFilter::make('status')
                     ->options([
@@ -173,8 +175,7 @@ class AppointmentResource extends Resource
                     )
             ])
             ->bulkActions([
-                // Tables\Actions\DeleteBulkAction::make(),
-                // Actions\Tables\ExportAction::make(),
+                FilamentExportBulkAction::make('export'),
             ])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
@@ -199,6 +200,7 @@ class AppointmentResource extends Resource
 
     protected static function getNavigationBadge(): ?string
     {
+        $date = Carbon::now()->toDateString();
         if (auth()->user()->role_id == 4) {
             // dd('patient');
             return parent::getEloquentQuery()
@@ -206,7 +208,7 @@ class AppointmentResource extends Resource
                 ->count();
         }
         // dd('admin');
-        return self::getModel()::count();
+        return self::getModel()::where('date',$date)->count();
     }
 
     public static function getEloquentQuery(): Builder

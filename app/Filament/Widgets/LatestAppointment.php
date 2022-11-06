@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\AppointmentResource;
 use App\Models\Appointment;
 use Carbon\Carbon;
 use Closure;
@@ -13,8 +14,13 @@ use Illuminate\Database\Eloquent\Builder;
 
 class LatestAppointment extends BaseWidget
 {
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 5;
     protected int | string |array $columnSpan = 'full'; 
+
+    public function getDefaultTableRecordsPerPageSelectOption(): int
+    {
+        return 5;
+    }
 
     protected function getDefaultTableSortColumn(): ?string
     {
@@ -23,13 +29,19 @@ class LatestAppointment extends BaseWidget
 
     protected function getDefaultTableSortDirection(): ?string
     {
-        return 'asc';
+        return 'desc';
     }
 
     protected function getTableQuery(): Builder
     {
         $dateWeek = Carbon::now()->subDays(7);
-        return Appointment::where('date', '>', $dateWeek); 
+        // return Appointment::where('date', '>', $dateWeek); 
+        return AppointmentResource::getEloquentQuery()->take(5);
+    }
+
+    protected function isTablePaginationEnabled(): bool
+    {
+        return false;
     }
 
     protected function getTableColumns(): array

@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use Carbon\Carbon;
 use Filament\Tables\Filters\Filter;
 
 class PatientRecordResource extends Resource
@@ -109,6 +110,7 @@ class PatientRecordResource extends Resource
                 TextColumn::make('purpose_of_visit'),
                 TextColumn::make('date_of_consultation')->date(),
             ])
+            ->defaultSort('date_of_consultation', 'desc')
             ->filters([
                 Filter::make('date_of_consultation')
                     ->form([
@@ -128,11 +130,11 @@ class PatientRecordResource extends Resource
                     })
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make()->color('warning'),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(),
                 FilamentExportBulkAction::make('export'),
             ])
             ->headerActions([
@@ -154,5 +156,12 @@ class PatientRecordResource extends Resource
             'create' => Pages\CreatePatientRecord::route('/create'),
             'edit' => Pages\EditPatientRecord::route('/{record}/edit'),
         ];
+    }
+
+    protected static function getNavigationBadge(): ?string
+    {
+        // dd(self::getModel()::where('date_of_consultation',now())->count());
+        $date = Carbon::now()->toDateString();
+        return PatientRecord::all()->where('date_of_consultation',$date)->count();
     }
 }

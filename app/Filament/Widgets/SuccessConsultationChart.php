@@ -2,17 +2,14 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Appointment;
-use Carbon\Carbon;
-use Flowframe\Trend\Trend;
-use Flowframe\Trend\TrendValue;
+use App\Models\PatientRecord;
 use Filament\Widgets\BarChartWidget;
 
-class SuccessAppointmentsChart extends BarChartWidget
+class SuccessConsultationChart extends BarChartWidget
 {
-    protected static ?string $heading = 'Appointments per Month';
+    protected static ?string $heading = 'Consultation per Month';
 
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 3;
 
     // protected static ?string $minHeight = '300px';
 
@@ -21,23 +18,23 @@ class SuccessAppointmentsChart extends BarChartWidget
 
     protected function getData(): array
     {
-        $january = Appointment::whereMonth('date', '1')->where('status', 'Success')->count();
-        $february = Appointment::whereMonth('date', '2')->where('status', 'Success')->count();
-        $march = Appointment::whereMonth('date', '3')->where('status', 'Success')->count();
-        $april = Appointment::whereMonth('date', '4')->where('status', 'Success')->count();
-        $may = Appointment::whereMonth('date', '5')->where('status', 'Success')->count();
-        $june = Appointment::whereMonth('date', '6')->where('status', 'Success')->count();
-        $july = Appointment::whereMonth('date', '7')->where('status', 'Success')->count();
-        $august = Appointment::whereMonth('date', '8')->where('status', 'Success')->count();
-        $september = Appointment::whereMonth('date', '9')->where('status', 'Success')->count();
-        $october = Appointment::whereMonth('date', '10')->where('status', 'Success')->count();
-        $november = Appointment::whereMonth('date', '11')->where('status', 'Success')->count();
-        $december = Appointment::whereMonth('date', '12')->where('status', 'Success')->count();
+        $january = PatientRecord::whereMonth('date_of_consultation', '1')->count();
+        $february = PatientRecord::whereMonth('date_of_consultation', '2')->count();
+        $march = PatientRecord::whereMonth('date_of_consultation', '3')->count();
+        $april = PatientRecord::whereMonth('date_of_consultation', '4')->count();
+        $may = PatientRecord::whereMonth('date_of_consultation', '5')->count();
+        $june = PatientRecord::whereMonth('date_of_consultation', '6')->count();
+        $july = PatientRecord::whereMonth('date_of_consultation', '7')->count();
+        $august = PatientRecord::whereMonth('date_of_consultation', '8')->count();
+        $september = PatientRecord::whereMonth('date_of_consultation', '9')->count();
+        $october = PatientRecord::whereMonth('date_of_consultation', '10')->count();
+        $november = PatientRecord::whereMonth('date_of_consultation', '11')->count();
+        $december = PatientRecord::whereMonth('date_of_consultation', '12')->count();
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Successful Appointment',
+                    'label' => 'Successful Consultation',
                     'data' => [
                         $january,
                         $february,
@@ -76,7 +73,6 @@ class SuccessAppointmentsChart extends BarChartWidget
     }
     public static function canView(): bool
     {
-        return false;
-        // return auth()->user()->role_id != 4;
+        return auth()->user()->role_id != 4;
     }
 }

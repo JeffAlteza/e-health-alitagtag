@@ -92,7 +92,7 @@ class DoctorScheduleResource extends Resource
                 BadgeColumn::make('status')
                     ->colors([
                         'danger' => 'unavailable',
-                        'success' => 'available',
+                        'primary' => 'available',
                     ])
             ])
             ->defaultSort('date','desc')
@@ -206,15 +206,14 @@ class DoctorScheduleResource extends Resource
 
     protected static function getNavigationBadge(): ?string
     {
-        $date = Carbon::now();
-
+        $date = Carbon::now()->toDateString();
         if (auth()->user()->role_id == 4) {
             return parent::getEloquentQuery()
                 ->whereDate('date', '>=', $date)
 
                 ->count();
         } else {
-            return self::getModel()::count();
+            return self::getModel()::where('date', $date)->count();
         }
         // return self::getModel()::count();
     }

@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Appointment;
+use App\Models\PatientRecord;
 use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
@@ -34,17 +35,20 @@ class AppointmentOverview extends BaseWidget
         $countToday = Appointment::where('date', '=', $date)->count();
         $countYesterday = Appointment::where('date', '=', $yesterday)->count();
 
+        $countTodayPatient = PatientRecord::where('date_of_consultation', '=', $date)->count();
+        $countYesterdayPatient = PatientRecord::where('date_of_consultation', '=', $yesterday)->count();
+
         $countStartWeek = Appointment::where('date', '=', $startWeek)->count();
         $countMonday = Appointment::where('date', '=', $monday)->count();
         $countTuesday = Appointment::where('date', '=', $tuesday)->count();
         $countWednesday = Appointment::where('date', '=', $wednesday)->count();
         $countThursday = Appointment::where('date', '=', $thursday)->count();
         $countFriday = Appointment::where('date', '=', $friday)->count();
-        $countEndWeek= Appointment::where('date', '=', $endWeek)->count();
+        $countEndWeek = Appointment::where('date', '=', $endWeek)->count();
 
-        $pendingYesterday = Appointment::where('status','=', 'pending')->where('date','=', $date)->count();
-        $pendingToday = Appointment::where('status','=', 'pending')->where('date','=', $yesterday)->count();
-        
+        $pendingYesterday = Appointment::where('status', '=', 'pending')->where('date', '=', $date)->count();
+        $pendingToday = Appointment::where('status', '=', 'pending')->where('date', '=', $yesterday)->count();
+
         $thisWeek = Appointment::where('date', '>', $dateWeek)->count();
         $lastWeek = Appointment::where('date', '>', $datelastWeek)->count();
         // $lastWeek = Appointment::all()
@@ -53,29 +57,37 @@ class AppointmentOverview extends BaseWidget
         //     end: now()->endOfYear(),
         // )->count();
         return [
-                Card::make('Appointment this Week', Appointment::all()->whereBetween('date',[$startWeek,$endWeek])->count())
+            Card::make('Success Consultation Today', PatientRecord::all()->where('date_of_consultation', $date)->count())
                 ->color('success')
+                ->description($date)
+                ->descriptionIcon('heroicon-s-presentation-chart-line')
+                ->chart([
+                    0, $countTodayPatient, 0,
+                    $countYesterdayPatient
+                ]),
+            Card::make('Appointment this Week', Appointment::all()->whereBetween('date', [$startWeek, $endWeek])->count())
+                ->color('primary')
                 ->description($startWeek)
                 ->descriptionIcon('heroicon-s-presentation-chart-line')
                 ->chart([
-                    0,$countStartWeek,0,
+                    0, $countStartWeek, 0,
                     // $countMonday,0,
                     // $countTuesday,0,
-                    $countWednesday,0,
+                    $countWednesday, 0,
                     // $countThursday,0,
                     // $countFriday,0,
                     $countEndWeek
                 ]),
-                Card::make('Appointment this Day', Appointment::where('date','=', $date)->count())
-                ->color('success')
+            Card::make('Appointment this Day', Appointment::where('date', '=', $date)->count())
+                ->color('primary')
                 ->description($date)
                 ->descriptionIcon('heroicon-s-presentation-chart-line')
-                ->chart([0, $countYesterday, 0 , $countToday]),
-                Card::make('Pending Appointments Today', Appointment::where('status','=', 'pending')->where('date','=', $date)->count())
+                ->chart([0, $countYesterday, 0, $countToday]),
+            Card::make('Pending Appointments Today', Appointment::where('status', '=', 'pending')->where('date', '=', $date)->count())
                 ->color('warning')
                 ->description($date)
                 ->descriptionIcon('heroicon-s-presentation-chart-line')
-                ->chart([0, $pendingYesterday, 0 , $pendingToday]),
+                ->chart([0, $pendingYesterday, 0, $pendingToday]),
         ];
     }
     public static function canView(): bool
