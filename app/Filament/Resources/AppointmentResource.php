@@ -50,13 +50,15 @@ class AppointmentResource extends Resource
             ->schema([
                 Card::make()->schema([
                     TextInput::make('user_id')
-                    ->default(auth()->user()->id),
+                    ->default(auth()->user()->id)
+                    ->disabled(),
                     // ->hidden(),
                 // Select::make('doctor.name')
                 //     ->required(),
                 Select::make('doctor_id')
                 ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
                 ->label('Doctor Name')
+                ->disabled(auth()->user()->role_id == 4)
                 ->required(),
                 // Select::make('doctor_id')
                 // ->relationship('user','name')

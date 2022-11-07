@@ -58,7 +58,7 @@ class AppointmentOverview extends BaseWidget
         // )->count();
         return [
             Card::make('Success Consultation Today', PatientRecord::all()->where('date_of_consultation', $date)->count())
-                ->color('success')
+                ->color('info')
                 ->description($date)
                 ->descriptionIcon('heroicon-s-presentation-chart-line')
                 ->chart([

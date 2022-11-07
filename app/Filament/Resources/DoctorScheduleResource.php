@@ -30,6 +30,7 @@ use Savannabits\Flatpickr\Flatpickr;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use Filament\Forms\Components\Card;
 use Filament\Notifications\Notification;
+use Filament\Notifications\Events\DatabaseNotificationsSent;
 
 class DoctorScheduleResource extends Resource
 {
@@ -123,7 +124,7 @@ class DoctorScheduleResource extends Resource
                     ->modalWidth('lg')
                     ->icon('heroicon-s-document-text')
                     ->action(function (DoctorSchedule $record, array $data): void {
-                        
+
                         //you can use $record for fill appointment columns
                         Appointment::create([
                             'name' => $data['name'],
@@ -140,6 +141,19 @@ class DoctorScheduleResource extends Resource
                         ]);
                         // $appointment = $this->record;
                         Filament::notify(status: 'success', message: 'Appointment Successfully');
+                        $recipient = auth()->user();
+                        Notification::make()
+                            ->title('Appointment Created Successfully')
+                            ->icon('heroicon-o-check-circle')
+                            ->body("**Good day {$recipient->name}!, you have successfully book an appointment. You only need to show up on the scheduled date, thank you!.**")
+                            ->sendToDatabase($recipient);
+
+                        $admin = auth()->user('role_id',1);
+                        Notification::make()
+                            ->title('Appointment Created Successfully')
+                            ->icon('heroicon-o-clipboard')
+                            ->body("**{$recipient->name}, .**")
+                            ->sendToDatabase($admin);
                     })
                     ->form([
                         TextInput::make('name')
