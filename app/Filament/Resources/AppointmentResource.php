@@ -139,8 +139,7 @@ class AppointmentResource extends Resource
                     ->options([
                         'Success' => 'Success',
                         'Pending' => 'Pending',
-                        'Cancelled' => 'Cancelled',
-                        'Approve' => 'Approve',
+                        'Cancelled' => 'Cancelled'
                     ]),
                 Filter::make('appointment_at')
                     ->form([

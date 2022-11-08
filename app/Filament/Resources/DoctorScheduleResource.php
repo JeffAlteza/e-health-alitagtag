@@ -141,19 +141,20 @@ class DoctorScheduleResource extends Resource
                         ]);
                         // $appointment = $this->record;
                         Filament::notify(status: 'success', message: 'Appointment Successfully');
-                        $recipient = auth()->user();
+                        // $recipient = [auth()->user()->role_id==1,auth()->user()->role_id==$record->doctor_id];
+                        $user = auth()->user();
                         Notification::make()
                             ->title('Appointment Created Successfully')
                             ->icon('heroicon-o-check-circle')
-                            ->body("**Good day {$recipient->name}!, you have successfully book an appointment. You only need to show up on the scheduled date, thank you!.**")
-                            ->sendToDatabase($recipient);
+                            ->body("**Good day {$user}!, you have successfully book an appointment. You only need to show up on the scheduled date, thank you!.**")
+                            ->iconColor('success')
+                            ->sendToDatabase($user);
 
-                        $admin = auth()->user('role_id',1);
-                        Notification::make()
-                            ->title('Appointment Created Successfully')
-                            ->icon('heroicon-o-clipboard')
-                            ->body("**{$recipient->name}, .**")
-                            ->sendToDatabase($admin);
+                        // Notification::make()
+                        //     ->title('Appointment Created Successfully')
+                        //     ->icon('heroicon-o-clipboard')
+                        //     ->body("**{$recipient->name}, .**")
+                        //     ->sendToDatabase($record->doctor_id);
                     })
                     ->form([
                         TextInput::make('name')

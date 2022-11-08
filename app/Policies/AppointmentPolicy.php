@@ -43,8 +43,8 @@ class AppointmentPolicy
      */
     public function create(User $user)
     {
-        return auth()->user()->role_id != 4;
-        // return false;
+        // return auth()->user()->role_id != 4;
+        return false;
     }
 
     /**

@@ -67,7 +67,7 @@ class AppointmentOverview extends BaseWidget
                 ]),
             Card::make('Appointment this Week', Appointment::all()->whereBetween('date', [$startWeek, $endWeek])->count())
                 ->color('primary')
-                ->description($startWeek)
+                ->description("{$startWeek} to {$endWeek}")
                 ->descriptionIcon('heroicon-s-clipboard-list')
                 ->chart([
                     0, $countStartWeek, 0,
@@ -78,7 +78,7 @@ class AppointmentOverview extends BaseWidget
                     // $countFriday,0,
                     $countEndWeek
                 ]),
-            Card::make('Appointment this Day', Appointment::where('date', '=', $date)->count())
+            Card::make('Appointment Today', Appointment::where('date', '=', $date)->count())
                 ->color('primary')
                 ->description($date)
                 ->descriptionIcon('heroicon-s-clipboard-copy')
