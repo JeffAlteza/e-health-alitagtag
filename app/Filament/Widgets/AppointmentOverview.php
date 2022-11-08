@@ -58,9 +58,9 @@ class AppointmentOverview extends BaseWidget
         // )->count();
         return [
             Card::make('Success Consultation Today', PatientRecord::all()->where('date_of_consultation', $date)->count())
-                ->color('info')
+                ->color('primary')
                 ->description($date)
-                ->descriptionIcon('heroicon-s-presentation-chart-line')
+                ->descriptionIcon('heroicon-s-clipboard-check')
                 ->chart([
                     0, $countTodayPatient, 0,
                     $countYesterdayPatient
@@ -68,7 +68,7 @@ class AppointmentOverview extends BaseWidget
             Card::make('Appointment this Week', Appointment::all()->whereBetween('date', [$startWeek, $endWeek])->count())
                 ->color('primary')
                 ->description($startWeek)
-                ->descriptionIcon('heroicon-s-presentation-chart-line')
+                ->descriptionIcon('heroicon-s-clipboard-list')
                 ->chart([
                     0, $countStartWeek, 0,
                     // $countMonday,0,
@@ -81,12 +81,12 @@ class AppointmentOverview extends BaseWidget
             Card::make('Appointment this Day', Appointment::where('date', '=', $date)->count())
                 ->color('primary')
                 ->description($date)
-                ->descriptionIcon('heroicon-s-presentation-chart-line')
+                ->descriptionIcon('heroicon-s-clipboard-copy')
                 ->chart([0, $countYesterday, 0, $countToday]),
             Card::make('Pending Appointments Today', Appointment::where('status', '=', 'pending')->where('date', '=', $date)->count())
                 ->color('warning')
                 ->description($date)
-                ->descriptionIcon('heroicon-s-presentation-chart-line')
+                ->descriptionIcon('heroicon-s-clipboard-copy')
                 ->chart([0, $pendingYesterday, 0, $pendingToday]),
         ];
     }
