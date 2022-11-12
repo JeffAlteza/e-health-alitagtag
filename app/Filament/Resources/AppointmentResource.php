@@ -27,6 +27,7 @@ use Livewire\Livewire;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use Carbon\Carbon;
 use Filament\Forms\Components\Card;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -50,65 +51,66 @@ class AppointmentResource extends Resource
             ->schema([
                 Card::make()->schema([
                     TextInput::make('user_id')
-                    ->default(auth()->user()->id)
-                    ->disabled(),
+                        ->default(auth()->user()->id)
+                        ->disabled(),
                     // ->hidden(),
-                // Select::make('doctor.name')
-                //     ->required(),
-                Select::make('doctor_id')
-                ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
-                ->label('Doctor Name')
-                ->disabled(auth()->user()->role_id == 4)
-                ->required(),
-                // Select::make('doctor_id')
-                // ->relationship('user','name')
-                // ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
-                // ->label('Doctor Name'),
-                // ->disabled(auth()->user()->role_id = 4),
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Select::make('gender')
-                    ->options([
-                        'Male' => 'Male',
-                        'Female' => 'Female',
-                        'Other' => 'Other',
-                    ])->required(),
-                DatePicker::make('birthday')
-                    ->required(),
-                TextInput::make('phone_number')
-                    ->tel()
-                    ->required()
-                    ->maxLength(255),
-                Select::make('category')
-                    ->options([
-                        'Dental' => 'Dental',
-                        'Check Up' => 'Check Up',
-                        'Medical' => 'Medical',
-                        'Other' => 'Other',
-                    ])->required(),
-                Select::make('specification')
-                    ->options([
-                        'Child' => 'Child',
-                        'Young' => 'Young',
-                        'Teen' => 'Teen',
-                        'Adult' => 'Adult',
-                        'Senior' => 'Senior',
-                        'Other' => 'Other',
-                    ])->required(),
-                DatePicker::make('date')
-                    ->label('Appointment Date')
-                    ->disabled(auth()->user()->role_id == 4)
-                    ->required(),
-                Select::make('status')
-                    ->disabled(auth()->user()->role_id == 4)
-                    ->options([
-                        'Cancelled' => 'Cancelled',
-                        'Pending' => 'Pending',
-                        'Success' => 'Success',
-                    ])
-                    ->default('Pending')
-                    ->required(),
+                    // Select::make('doctor.name')
+                    //     ->required(),
+                    Select::make('doctor_id')
+                        ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
+                        ->label('Doctor Name')
+                        ->disabled(auth()->user()->role_id == 4)
+                        ->required(),
+                    // Select::make('doctor_id')
+                    // ->relationship('user','name')
+                    // ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
+                    // ->label('Doctor Name'),
+                    // ->disabled(auth()->user()->role_id = 4),
+                    TextInput::make('name')
+                        ->required()
+                        ->maxLength(255),
+                    Select::make('gender')
+                        ->options([
+                            'Male' => 'Male',
+                            'Female' => 'Female',
+                            'Other' => 'Other',
+                        ])->required(),
+                    DatePicker::make('birthday')
+                        ->required(),
+                    TextInput::make('phone_number')
+                        ->tel()
+                        ->required()
+                        ->maxLength(255),
+                    Select::make('category')
+                        ->options([
+                            'Dental' => 'Dental',
+                            'Medical/Checkup' => 'Medical/Check Up',
+                            'OB' => 'OB',
+                            'Other' => 'Other',
+                        ])->required(),
+                    Select::make('specification')
+                        ->options([
+                            'Infant' => 'Infant',
+                            'Child' => 'Child',
+                            'Teen' => 'Teen',
+                            'Adult' => 'Adult',
+                            'Senior' => 'Senior',
+                            'PWD' => 'PWD',
+                            'Other' => 'Other',
+                        ])->required(),
+                    DatePicker::make('date')
+                        ->label('Appointment Date')
+                        ->disabled(auth()->user()->role_id == 4)
+                        ->required(),
+                    Select::make('status')
+                        ->disabled(auth()->user()->role_id == 4)
+                        ->options([
+                            'Cancelled' => 'Cancelled',
+                            'Pending' => 'Pending',
+                            'Success' => 'Success',
+                        ])
+                        ->default('Pending')
+                        ->required(),
                 ])->columns(2),
             ]);
     }
@@ -140,11 +142,14 @@ class AppointmentResource extends Resource
                         'Success' => 'Success',
                         'Pending' => 'Pending',
                         'Cancelled' => 'Cancelled'
-                    ]),
+                    ])
+                    ->default('Pending'),
                 Filter::make('appointment_at')
                     ->form([
-                        DatePicker::make('appointment_from'),
-                        DatePicker::make('appointment_until'),
+                        DatePicker::make('appointment_from')
+                            ->default(Carbon::now()),
+                        DatePicker::make('appointment_until')
+                            ->default(Carbon::now()),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -160,31 +165,65 @@ class AppointmentResource extends Resource
 
             ])
             ->actions([
-                ViewAction::make()->color('warning'),
-                EditAction::make()
-                    ->disabled(fn (Appointment $record) => auth()->user()->role_id == 4 && ($record->status == 'Success' || $record->status == 'Cancelled')),
-                Action::make('cancel')
-                    ->disabled(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
-                    ->hidden(auth()->user()->role_id != 4)
-                    ->requiresConfirmation()
-                    ->icon('heroicon-s-x-circle')
-                    ->color('danger')
-                    ->action(
-                        function (Appointment $record, array $data): void {
-                            $record->update([
-                                'status' => 'Cancelled',
-                            ]);
-                            Filament::notify(status: 'success', message: 'Cancelled Appointment');
-                        }
-                    )
+                ActionGroup::make([
+                    ViewAction::make()->color('warning'),
+                    EditAction::make()
+                        ->hidden(fn (Appointment $record) => auth()->user()->role_id == 4 && ($record->status == 'Success' || $record->status == 'Cancelled')),
+
+                    Action::make('cancel')
+                        // ->disabled(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
+                        ->hidden(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
+                        // ->hidden(auth()->user()->role_id != 4)
+                        ->requiresConfirmation()
+                        ->icon('heroicon-s-x-circle')
+                        ->color('danger')
+                        ->action(
+                            function (Appointment $record, array $data): void {
+                                $record->update([
+                                    'status' => 'Cancelled',
+                                ]);
+                                Filament::notify(status: 'success', message: 'Cancelled Appointment');
+                            }
+                        ),
+                    Action::make('success')
+                        // ->disabled(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
+                        ->hidden(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
+                        // ->hidden(auth()->user()->role_id != 4)
+                        ->requiresConfirmation()
+                        ->icon('heroicon-s-check-circle')
+                        ->color('primary')
+                        ->action(
+                            function (Appointment $record, array $data): void {
+                                $record->update([
+                                    'status' => 'Success',
+                                ]);
+                                Filament::notify(status: 'success', message: 'Appointment Success');
+                            }
+                        ),
+                    Action::make('pending')
+                        // ->disabled(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
+                        ->hidden(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Pending')
+                        // ->hidden(auth()->user()->role_id != 4)
+                        ->requiresConfirmation()
+                        ->icon('heroicon-s-x-circle')
+                        ->color('danger')
+                        ->action(
+                            function (Appointment $record, array $data): void {
+                                $record->update([
+                                    'status' => 'Pending',
+                                ]);
+                                Filament::notify(status: 'success', message: 'Appointmen status changed to Pending');
+                            }
+                        ),
+                ]),
             ])
             ->bulkActions([
                 FilamentExportBulkAction::make('export'),
             ])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
-                ->label('Export All')
-                ->hidden(auth()->user()->role_id == 4)
+                    ->label('Export All')
+                    ->hidden(auth()->user()->role_id == 4)
             ]);
     }
 
@@ -214,7 +253,7 @@ class AppointmentResource extends Resource
                 ->count();
         }
         // dd('admin');
-        return self::getModel()::where('date',$date)->count();
+        return self::getModel()::where('date', $date)->count();
     }
 
     public static function getEloquentQuery(): Builder

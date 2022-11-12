@@ -46,30 +46,42 @@ class PatientRecordResource extends Resource
                 Wizard::make([
                     Step::make('Personal Information')->schema([
                         Card::make()->schema([
-                            TextInput::make('name')
-                                ->required(),
-                            TextInput::make('age')
-                                ->numeric()
-                                ->required(),
-                            TextInput::make('address')
-                                ->columnSpan('full')
-                                ->required(),
-                            TextInput::make('height')->numeric()->label('Height(cm)'),
-                            TextInput::make('weight')->numeric()->label('Weight(kg)'),
-                            DatePicker::make('date_of_consultation')
-                                ->required(),
-                            TextInput::make('time_of_consultation')
-                                ->required(),
-                            TextInput::make('nature_of_visit'),
-                            TextInput::make('purpose_of_visit'),
-                            Radio::make('smoker')
-                                ->label('Smoker?')
-                                ->boolean()
-                                ->inline(),
-                            Radio::make('alcohol_drinker')
-                                ->label('Alcohol Drinker?')
-                                ->boolean()
-                                ->inline(),
+                            Fieldset::make('Information')
+                                ->schema([
+                                    TextInput::make('patient_number')
+                                        ->required(),
+                                    TextInput::make('philhealth_id'),
+                                    TextInput::make('name')
+                                        ->required(),
+                                    TextInput::make('age')
+                                        ->numeric()
+                                        ->required(),
+                                    DatePicker::make('birthday')
+                                        ->required(),
+                                    TextInput::make('phone_number')
+                                        ->required(),
+                                    TextInput::make('address')
+                                        ->columnSpan('full'),
+                                    TextInput::make('height')->numeric()->label('Height(cm)'),
+                                    TextInput::make('weight')->numeric()->label('Weight(kg)')->required(),
+                                ]),
+                            Fieldset::make('Consultation')
+                                ->schema([
+                                    DatePicker::make('date_of_consultation')
+                                        ->default(now()),
+                                    TextInput::make('time_of_consultation'),
+                                    TextInput::make('nature_of_visit'),
+                                    TextInput::make('purpose_of_visit'),
+                                    Radio::make('smoker')
+                                        ->label('Smoker?')
+                                        ->boolean()
+                                        ->inline(),
+                                    Radio::make('alcohol_drinker')
+                                        ->label('Alcohol Drinker?')
+                                        ->boolean()
+                                        ->inline(),
+                                ]),
+
                         ])->columns(2)
                     ]),
                     Step::make('Vital Signs')->schema([
@@ -91,9 +103,10 @@ class PatientRecordResource extends Resource
                     ]),
                     Step::make('Recommendations')->schema([
                         Card::make()->schema([
-                            Textarea::make('chief_complaint'),
+                            Textarea::make('chief_complaint')->required(),
                             Textarea::make('recommendation')
-                                ->label('Treatment/Management/Medicine Given:'),
+                                ->label('Treatment/Management/Medicine Given:')
+                                ->required(),
                         ])
                     ])->columns(1)
                 ])->columnSpan('full'),
@@ -104,10 +117,9 @@ class PatientRecordResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('patient_number'),
                 TextColumn::make('name'),
                 TextColumn::make('age'),
-                TextColumn::make('nature_of_visit'),
-                TextColumn::make('purpose_of_visit'),
                 TextColumn::make('date_of_consultation')->date(),
             ])
             ->defaultSort('date_of_consultation', 'desc')
@@ -162,6 +174,6 @@ class PatientRecordResource extends Resource
     {
         // dd(self::getModel()::where('date_of_consultation',now())->count());
         $date = Carbon::now()->toDateString();
-        return PatientRecord::all()->where('date_of_consultation',$date)->count();
+        return PatientRecord::all()->where('date_of_consultation', $date)->count();
     }
 }

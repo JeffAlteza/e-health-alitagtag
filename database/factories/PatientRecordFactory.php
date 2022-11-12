@@ -18,11 +18,15 @@ class PatientRecordFactory extends Factory
     {
         return [
             //
+            'patient_number' => fake()->randomNumber(),
             'name' => fake()->name(),
             'address' => fake()->address(),
             'age' => fake()->numberBetween(1,100),
+            'weight' => fake()->numberBetween(1,100),
+            'birthday'=>fake()->date(),
+            'phone_number' => fake()->phoneNumber(),
             'time_of_consultation'=>fake()->time(),
-            'date_of_consultation'=>fake()->dateTimeBetween($startDate = '-10 month', $endDate = '+2 month', $timezone = null),
+            'date_of_consultation'=>fake()->dateTimeBetween($startDate = '-10 month', $endDate = now(), $timezone = null),
         ];
     }
 }

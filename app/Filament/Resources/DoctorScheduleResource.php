@@ -57,8 +57,8 @@ class DoctorScheduleResource extends Resource
                     Select::make('category')
                         ->options([
                             'Dental' => 'Dental',
-                            'Check Up' => 'Check Up',
-                            'Medical' => 'Medical',
+                            'Medical/Checkup' => 'Medical/Check Up',
+                            'OB' => 'OB',
                             'Other' => 'Other',
                         ])->required(),
 
@@ -101,7 +101,8 @@ class DoctorScheduleResource extends Resource
             ->filters([
                 Filter::make('schedule_at')
                     ->form([
-                        DatePicker::make('schedule_from'),
+                        DatePicker::make('schedule_from')
+                        ->default(Carbon::now()),
                         DatePicker::make('schedule_until'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -181,11 +182,12 @@ class DoctorScheduleResource extends Resource
                             ])->required(),
                         Select::make('specification')
                             ->options([
+                                'Infant' => 'Infant',
                                 'Child' => 'Child',
-                                'Young' => 'Young',
                                 'Teen' => 'Teen',
                                 'Adult' => 'Adult',
                                 'Senior' => 'Senior',
+                                'PWD' => 'PWD',
                                 'Other' => 'Other',
                             ])->required(),
                         // TextInput::make('doctor_id'),

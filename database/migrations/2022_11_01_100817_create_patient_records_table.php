@@ -16,8 +16,12 @@ return new class extends Migration
         Schema::create('patient_records', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->string('patient_number')->nullable();
+            $table->string('philhealth_id')->nullable();
             $table->string('address')->nullable();
             $table->integer('age')->nullable();
+            $table->date('phone_number')->nullable();
+            $table->date('birthday')->nullable();
             $table->date('date_of_consultation')->nullable();
             $table->string('time_of_consultation')->nullable();
             $table->string('nature_of_visit')->nullable();
