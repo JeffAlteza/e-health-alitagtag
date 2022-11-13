@@ -40,8 +40,9 @@ class Register extends Component implements Forms\Contracts\HasForms
                 ->label(__('filament-breezy::default.fields.name'))
                 ->required(),
             Forms\Components\TextInput::make('email')
-                ->label(__('filament-breezy::default.fields.email'))
-                ->required()
+            ->label('Email (optional)')
+                // ->label(__('filament-breezy::default.fields.email'))
+                // ->required()
                 ->email()
                 ->unique(table: config('filament-breezy.user_model')),
             Forms\Components\TextInput::make('password')

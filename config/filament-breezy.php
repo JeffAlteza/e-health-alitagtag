@@ -94,7 +94,7 @@ return [
     |--------------------------------------------------------------------------
     | Where to redirect the user after registration.
     */
-    "registration_redirect_url" => config("e_healt.test", "/admin/login"),
+    "registration_redirect_url" =>  '',
     /*
     |--------------------------------------------------------------------------
     | Enable sanctum api token management.
