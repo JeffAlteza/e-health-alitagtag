@@ -130,10 +130,12 @@ class PatientRecordResource extends Resource
                         DatePicker::make('consultation_until'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
+                        $date = Carbon::now()->toString();
+                        $yesterday = Carbon::yesterday();
                         return $query
                             ->when(
                                 $data['consultation_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('date_of_consultation', '>=', $date),
+                                fn (Builder $query, $date): Builder => $query->whereDate('date_of_consultation', '>', $yesterday),
                             )
                             ->when(
                                 $data['consultation_until'],

@@ -61,8 +61,12 @@
 
             <!-- Mobile Menu Toggle Button -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-awesome fas fa-bars"></span>
-                <span class="navbar-toggler-awesome fas fa-times"></span>
+                <!-- <span class="navbar-toggler-awesome fas fa-bars"></span>-->
+                <span class="navbar-toggler-awesome fas" style="height: 30px; width: 30px; display: flex; align-items: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="#00000" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+                </span> 
             </button>
             <!-- end of mobile menu toggle button -->
 
@@ -92,7 +96,7 @@
         <div class="header-content">
             <div class="container">
                 <div class="row">
-                    <div data-aos="fade-right"  data-aos-duration="3000" class="col-lg-6 col-xl-5">
+                    <div data-aos="fade-right" data-aos-duration="3000" class="col-lg-6 col-xl-5">
                         <div class="text-container">
                             <h1>E-Health: Alitagtag Rural Health Unit</h1>
                             <p class="p-large">Managing and making an appointment has been more easier for the residence of Alitagtag Batangas</p>
@@ -114,7 +118,7 @@
         <defs>
             <style>
                 .cls-1 {
-                    fill: #22C55E;
+                    fill: #15803d;
                 }
             </style>
         </defs>
@@ -140,8 +144,8 @@
                     <div class="col-lg-12">
 
                         <!-- Card -->
-                        <div data-aos="fade-right"  data-aos-duration="2000" class="card">
-                            <div  class="card-image">
+                        <div data-aos="fade-right" data-aos-duration="2000" class="card">
+                            <div class="card-image">
                                 <img class="img-fluid" src="Images/login3.png" alt="doctor">
                             </div>
                             <div class="card-body">
@@ -189,7 +193,7 @@
             <defs>
                 <style>
                     .cls-2 {
-                        fill: #22C55E;
+                        fill: #15803d;
                     }
                 </style>
             </defs>
@@ -226,8 +230,12 @@
                     </div> <!-- end of col -->
                     <div class="col-md-4">
                         <div class="footer-col last">
-                            <h4>Contact</h4>
+                            <h4>Contacts</h4>
                             <ul class="list-unstyled li-space-lg p-small">
+                                <li class="media">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <div class="media-body">Facebook: <a class="white" href="https://www.facebook.com/profile.php?id=100078461572344">Alitagtag Rural Health Unit</a></div>
+                                </li>
                                 <li class="media">
                                     <i class="fas fa-map-marker-alt"></i>
                                     <div class="media-body">Dr. Flordeliza V. Castillo</div>

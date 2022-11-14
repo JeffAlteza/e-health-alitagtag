@@ -152,17 +152,18 @@ class AppointmentResource extends Resource
                             ->default(Carbon::now()),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
+                        $date = Carbon::now()->toString();
+                        $yesterday = Carbon::yesterday();
                         return $query
                             ->when(
                                 $data['appointment_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
+                                fn (Builder $query, $date): Builder => $query->whereDate('date', '>', $yesterday),
                             )
                             ->when(
                                 $data['appointment_until'],
                                 fn (Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
                             );
-                    })
-
+                    }),
             ])
             ->actions([
                 ActionGroup::make([

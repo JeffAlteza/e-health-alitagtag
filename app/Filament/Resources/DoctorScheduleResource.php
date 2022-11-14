@@ -106,10 +106,12 @@ class DoctorScheduleResource extends Resource
                         DatePicker::make('schedule_until'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
+                        $date = Carbon::now()->toString();
+                        $yesterday = Carbon::yesterday();
                         return $query
                             ->when(
                                 $data['schedule_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
+                                fn (Builder $query, $date): Builder => $query->whereDate('date', '>', $yesterday),
                             )
                             ->when(
                                 $data['schedule_until'],
