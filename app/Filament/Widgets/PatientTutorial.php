@@ -16,6 +16,7 @@ class PatientTutorial extends Widget
                 ->color('primary'),
         ];
     }
+
     public static function canView(): bool
     {
         return false;

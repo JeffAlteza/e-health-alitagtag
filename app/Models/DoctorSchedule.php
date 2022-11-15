@@ -10,17 +10,17 @@ class DoctorSchedule extends Model
 {
     use HasFactory;
 
-    protected $fillable=[
+    protected $fillable = [
         'name',
         'category',
         'date',
         'time_start',
         'time_end',
         'doctor_id',
-        'status'
+        'status',
     ];
 
-    public function doctor():BelongsTo
+    public function doctor(): BelongsTo
     {
         return $this->BelongsTo(related:User::class);
     }

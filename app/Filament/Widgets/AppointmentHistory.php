@@ -3,8 +3,6 @@
 namespace App\Filament\Widgets;
 
 use App\Filament\Resources\AppointmentResource;
-use Closure;
-use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -14,8 +12,7 @@ class AppointmentHistory extends BaseWidget
 {
     protected static ?int $sort = 4;
 
-    protected int | string |array $columnSpan = 'full'; 
-
+    protected int | string |array $columnSpan = 'full';
 
     protected function getDefaultTableSortColumn(): ?string
     {
@@ -51,7 +48,7 @@ class AppointmentHistory extends BaseWidget
                         'danger' => 'Cancelled',
                         'warning' => 'Pending',
                         'success' => 'Success',
-                    ])->sortable()->searchable()
+                    ])->sortable()->searchable(),
         ];
     }
 

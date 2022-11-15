@@ -13,6 +13,7 @@ class DoctorAvailable extends BaseWidget
     protected function getCards(): array
     {
         $date = Carbon::now()->toDateString();
+
         return [
             //
             Card::make('Available Schedule Today', DoctorSchedule::all()->where('date', $date)->count())
@@ -25,6 +26,7 @@ class DoctorAvailable extends BaseWidget
                 ->descriptionIcon('heroicon-s-clipboard-check'),
         ];
     }
+
     public static function canView(): bool
     {
         return auth()->user()->role_id == 4;

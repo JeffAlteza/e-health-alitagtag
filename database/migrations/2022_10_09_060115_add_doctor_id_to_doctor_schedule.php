@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('doctor_id')->constrained('users')->onDelete('cascade');
         });
         Schema::enableForeignKeyConstraints();
-
     }
 
     /**

@@ -32,7 +32,6 @@ class AppointmentPolicy
     public function view(User $user, Appointment $appointment)
     {
         return auth()->user();
-
     }
 
     /**
@@ -57,7 +56,6 @@ class AppointmentPolicy
     public function update(User $user, Appointment $appointment)
     {
         return auth()->user();
-
     }
 
     /**
@@ -71,8 +69,8 @@ class AppointmentPolicy
     {
         // return auth()->user();
         return auth()->user()->role_id == 1;
-
     }
+
     /**
      * Determine whether the user can restore the model.
      *
@@ -83,7 +81,6 @@ class AppointmentPolicy
     public function restore(User $user, Appointment $appointment)
     {
         return auth()->user();
-
     }
 
     /**
@@ -96,6 +93,5 @@ class AppointmentPolicy
     public function forceDelete(User $user, Appointment $appointment)
     {
         return auth()->user();
-
     }
 }

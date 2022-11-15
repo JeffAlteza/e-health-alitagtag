@@ -20,7 +20,6 @@ class PatientRecordPolicy
     {
         //
         return auth()->user()->role_id != 4;
-
     }
 
     /**
@@ -34,7 +33,6 @@ class PatientRecordPolicy
     {
         //
         return auth()->user()->role_id != 4;
-
     }
 
     /**
@@ -47,7 +45,6 @@ class PatientRecordPolicy
     {
         //
         return auth()->user()->role_id != 4;
-
     }
 
     /**
@@ -61,7 +58,6 @@ class PatientRecordPolicy
     {
         //
         return auth()->user()->role_id != 4;
-
     }
 
     /**
@@ -75,7 +71,6 @@ class PatientRecordPolicy
     {
         //
         return auth()->user()->role_id != 4;
-
     }
 
     /**
@@ -85,5 +80,4 @@ class PatientRecordPolicy
      * @param  \App\Models\PatientRecord  $patientRecord
      * @return \Illuminate\Auth\Access\Response|bool
      */
-   
 }

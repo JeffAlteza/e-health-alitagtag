@@ -3,9 +3,8 @@
 namespace App\Filament\Resources\AppointmentResource\Pages;
 
 use App\Filament\Resources\AppointmentResource;
-use Filament\Notifications\Notification;
-use Filament\Pages\Actions;
 use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateAppointment extends CreateRecord

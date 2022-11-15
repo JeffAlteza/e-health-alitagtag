@@ -14,10 +14,11 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot() {
+    public function boot()
+    {
         Filament::serving(function () {
             Filament::registerTheme(
-                app(Vite::class)('resources/css/filament.css')  
+                app(Vite::class)('resources/css/filament.css')
             );
         });
 

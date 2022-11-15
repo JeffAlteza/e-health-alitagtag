@@ -3,34 +3,29 @@
 namespace App\Filament\Resources;
 
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use App\Filament\Resources\AppointmentResource\Pages;
-use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Models\Appointment;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Facades\Filament;
-use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
-use Filament\Tables;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Livewire;
-use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
-use Carbon\Carbon;
-use Filament\Forms\Components\Card;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentResource extends Resource
 {
@@ -38,12 +33,11 @@ class AppointmentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
-    protected static ?string $navigationGroup = "Manage";
+    protected static ?string $navigationGroup = 'Manage';
 
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?int $navigationSort = 2;
-
 
     public static function form(Form $form): Form
     {
@@ -138,13 +132,15 @@ class AppointmentResource extends Resource
             ->defaultSort('date', 'desc')
             ->filters([
                 SelectFilter::make('status')
+                    ->hidden(auth()->user()->role_id == 4)
                     ->options([
                         'Success' => 'Success',
                         'Pending' => 'Pending',
-                        'Cancelled' => 'Cancelled'
+                        'Cancelled' => 'Cancelled',
                     ])
                     ->default('Pending'),
                 Filter::make('appointment_at')
+                    ->hidden(auth()->user()->role_id == 4)
                     ->form([
                         DatePicker::make('appointment_from')
                             ->default(Carbon::now()),
@@ -154,6 +150,7 @@ class AppointmentResource extends Resource
                     ->query(function (Builder $query, array $data): Builder {
                         $date = Carbon::now()->toString();
                         $yesterday = Carbon::yesterday();
+
                         return $query
                             ->when(
                                 $data['appointment_from'],
@@ -189,7 +186,7 @@ class AppointmentResource extends Resource
                     Action::make('success')
                         // ->disabled(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
                         ->hidden(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
-                        // ->hidden(auth()->user()->role_id != 4)
+                        ->hidden(auth()->user()->role_id == 4)
                         ->requiresConfirmation()
                         ->icon('heroicon-s-check-circle')
                         ->color('primary')
@@ -204,10 +201,10 @@ class AppointmentResource extends Resource
                     Action::make('pending')
                         // ->disabled(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
                         ->hidden(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Pending')
-                        // ->hidden(auth()->user()->role_id != 4)
+                        ->hidden(auth()->user()->role_id == 4)
                         ->requiresConfirmation()
-                        ->icon('heroicon-s-x-circle')
-                        ->color('danger')
+                        ->icon('heroicon-s-minus-circle')
+                        ->color('warning')
                         ->action(
                             function (Appointment $record, array $data): void {
                                 $record->update([
@@ -224,7 +221,7 @@ class AppointmentResource extends Resource
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
                     ->label('Export All')
-                    ->hidden(auth()->user()->role_id == 4)
+                    ->hidden(auth()->user()->role_id == 4),
             ]);
     }
 
@@ -254,7 +251,11 @@ class AppointmentResource extends Resource
                 ->count();
         }
         // dd('admin');
-        return self::getModel()::where('date', $date)->count();
+        return parent::getEloquentQuery()
+            ->where('date', $date)
+            ->where('status', 'Pending')
+            ->count();
+        // return self::getModel()::where('date', $date)->count();
     }
 
     public static function getEloquentQuery(): Builder
@@ -266,6 +267,7 @@ class AppointmentResource extends Resource
             return parent::getEloquentQuery()
                 ->where('user_id', auth()->user()->id);
         }
+
         return parent::getEloquentQuery()->withoutGlobalScopes();
     }
 }

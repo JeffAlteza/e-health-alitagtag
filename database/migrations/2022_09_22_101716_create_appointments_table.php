@@ -22,10 +22,9 @@ return new class extends Migration
             $table->string('category');
             $table->string('specification');
             $table->date('date');
-            $table->string('status')->default('pending');
+            $table->string('status')->default('Pending');
             $table->timestamps();
         });
-
     }
 
     /**

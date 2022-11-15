@@ -36,7 +36,6 @@ class DatabaseSeeder extends Seeder
         // Roles::factory()->create([
         //     'name' => 'Patient',
         // ]);
-        
 
         // User::factory()->create([
         //     'name' => 'Administrator',

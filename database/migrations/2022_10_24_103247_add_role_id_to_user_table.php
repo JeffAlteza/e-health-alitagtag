@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('role_id')->default(4)->after('password')->constrained('roles')->onDelete('cascade');
         });
         Schema::enableForeignKeyConstraints();
-
     }
 
     /**

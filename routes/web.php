@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,15 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-
 // Route::redirect('/','admin')->name('login');
-Route::redirect('/','welcome');
-Route::redirect('login','admin/login')->name('login');
+Route::redirect('/', 'welcome');
+Route::redirect('login', 'admin/login')->name('login');
 Route::redirect('register', 'admin/register')->name('register');
-Route::view('welcome','welcome')->name('welcome');
-Route::get("/profile", function () {
+Route::view('welcome', 'welcome')->name('welcome');
+Route::get('/profile', function () {
     // Only verified users may access this route...
 })->middleware('verified');
-
-

@@ -2,18 +2,18 @@
 
 namespace App\Filament\Resources;
 
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use App\Filament\Resources\DoctorScheduleResource\Pages;
-use App\Filament\Resources\DoctorScheduleResource\RelationManagers;
 use App\Models\Appointment;
 use App\Models\DoctorSchedule;
 use App\Models\User;
 use Carbon\Carbon;
 use Filament\Facades\Filament;
-use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\TimePicker;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -25,12 +25,7 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Savannabits\Flatpickr\Flatpickr;
-use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
-use Filament\Forms\Components\Card;
-use Filament\Notifications\Notification;
-use Filament\Notifications\Events\DatabaseNotificationsSent;
 
 class DoctorScheduleResource extends Resource
 {
@@ -38,7 +33,7 @@ class DoctorScheduleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
 
-    protected static ?string $navigationGroup = "Manage";
+    protected static ?string $navigationGroup = 'Manage';
 
     protected static ?int $navigationSort = 1;
 
@@ -95,7 +90,7 @@ class DoctorScheduleResource extends Resource
                     ->colors([
                         'danger' => 'unavailable',
                         'primary' => 'available',
-                    ])
+                    ]),
             ])
             ->defaultSort('date', 'desc')
             ->filters([
@@ -108,6 +103,7 @@ class DoctorScheduleResource extends Resource
                     ->query(function (Builder $query, array $data): Builder {
                         $date = Carbon::now()->toString();
                         $yesterday = Carbon::yesterday();
+
                         return $query
                             ->when(
                                 $data['schedule_from'],
@@ -117,7 +113,7 @@ class DoctorScheduleResource extends Resource
                                 $data['schedule_until'],
                                 fn (Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
                             );
-                    })
+                    }),
             ])
             ->actions([
                 EditAction::make(),
@@ -127,7 +123,6 @@ class DoctorScheduleResource extends Resource
                     ->modalWidth('lg')
                     ->icon('heroicon-s-document-text')
                     ->action(function (DoctorSchedule $record, array $data): void {
-
                         //you can use $record for fill appointment columns
                         Appointment::create([
                             'name' => $data['name'],
@@ -205,7 +200,7 @@ class DoctorScheduleResource extends Resource
                 // Tables\Actions\DeleteBulkAction::make(),
             ])
             ->headerActions([
-                FilamentExportHeaderAction::make('export')->hidden(auth()->user()->role_id == 4)
+                FilamentExportHeaderAction::make('export')->hidden(auth()->user()->role_id == 4),
             ]);
     }
 

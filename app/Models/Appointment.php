@@ -20,15 +20,15 @@ class Appointment extends Model
         'date',
         'status',
         'user_id',
-        'doctor_id'
+        'doctor_id',
     ];
 
-    public function user():BelongsTo
+    public function user(): BelongsTo
     {
         return $this->BelongsTo(related:User::class);
     }
 
-    public function doctor():BelongsTo
+    public function doctor(): BelongsTo
     {
         return $this->BelongsTo(related:User::class);
     }

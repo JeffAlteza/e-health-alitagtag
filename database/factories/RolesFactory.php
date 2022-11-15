@@ -18,7 +18,7 @@ class RolesFactory extends Factory
     {
         return [
             //
-            'name' => fake()->name()
+            'name' => fake()->name(),
         ];
     }
 }

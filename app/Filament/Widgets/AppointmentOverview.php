@@ -11,6 +11,7 @@ use Filament\Widgets\StatsOverviewWidget\Card;
 class AppointmentOverview extends BaseWidget
 {
     protected static ?int $sort = 1;
+
     // protected static ?string $pollingInterval = '5s';
     protected function getCards(): array
     {
@@ -25,9 +26,6 @@ class AppointmentOverview extends BaseWidget
         $wednesday = Carbon::now()->now(Carbon::WEDNESDAY)->toDateString();
         $thursday = Carbon::now()->now(Carbon::THURSDAY)->toDateString();
         $friday = Carbon::now()->now(Carbon::FRIDAY)->toDateString();
-
-
-
 
         $dateWeek = Carbon::now()->subDays(7);
         $datelastWeek = Carbon::now()->subDays(14);
@@ -63,7 +61,7 @@ class AppointmentOverview extends BaseWidget
                 ->descriptionIcon('heroicon-s-clipboard-check')
                 ->chart([
                     0, $countTodayPatient, 0,
-                    $countYesterdayPatient
+                    $countYesterdayPatient,
                 ]),
             Card::make('Appointment this Week', Appointment::all()->whereBetween('date', [$startWeek, $endWeek])->count())
                 ->color('primary')
@@ -76,7 +74,7 @@ class AppointmentOverview extends BaseWidget
                     $countWednesday, 0,
                     // $countThursday,0,
                     // $countFriday,0,
-                    $countEndWeek
+                    $countEndWeek,
                 ]),
             Card::make('Appointment Today', Appointment::where('date', '=', $date)->count())
                 ->color('primary')
@@ -90,6 +88,7 @@ class AppointmentOverview extends BaseWidget
                 ->chart([0, $pendingYesterday, 0, $pendingToday]),
         ];
     }
+
     public static function canView(): bool
     {
         return auth()->user()->role_id != 4;

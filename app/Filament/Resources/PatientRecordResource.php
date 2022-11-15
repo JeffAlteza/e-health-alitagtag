@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use App\Filament\Resources\PatientRecordResource\Pages;
-use App\Filament\Resources\PatientRecordResource\RelationManagers;
 use App\Models\PatientRecord;
-use Filament\Forms;
+use Carbon\Carbon;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
@@ -19,13 +20,8 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
-use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
-use Carbon\Carbon;
 use Filament\Tables\Filters\Filter;
+use Illuminate\Database\Eloquent\Builder;
 
 class PatientRecordResource extends Resource
 {
@@ -33,7 +29,7 @@ class PatientRecordResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
-    protected static ?string $navigationGroup = "Manage";
+    protected static ?string $navigationGroup = 'Manage';
 
     protected static ?int $navigationSort = 3;
 
@@ -82,7 +78,7 @@ class PatientRecordResource extends Resource
                                         ->inline(),
                                 ]),
 
-                        ])->columns(2)
+                        ])->columns(2),
                     ]),
                     Step::make('Vital Signs')->schema([
                         Card::make()->schema([
@@ -99,7 +95,7 @@ class PatientRecordResource extends Resource
                             TextInput::make('AOG')->label('AOG'),
                             TextInput::make('FUNDIC_HT')->label('FUNDIC HT (cm)'),
                             TextInput::make('WAIST_CIR')->label('WAIST CIR'),
-                        ])->columns(3)
+                        ])->columns(3),
                     ]),
                     Step::make('Recommendations')->schema([
                         Card::make()->schema([
@@ -107,8 +103,8 @@ class PatientRecordResource extends Resource
                             Textarea::make('recommendation')
                                 ->label('Treatment/Management/Medicine Given:')
                                 ->required(),
-                        ])
-                    ])->columns(1)
+                        ]),
+                    ])->columns(1),
                 ])->columnSpan('full'),
             ]);
     }
@@ -132,6 +128,7 @@ class PatientRecordResource extends Resource
                     ->query(function (Builder $query, array $data): Builder {
                         $date = Carbon::now()->toString();
                         $yesterday = Carbon::yesterday();
+
                         return $query
                             ->when(
                                 $data['consultation_from'],
@@ -141,7 +138,7 @@ class PatientRecordResource extends Resource
                                 $data['consultation_until'],
                                 fn (Builder $query, $date): Builder => $query->whereDate('date_of_consultation', '<=', $date),
                             );
-                    })
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()->color('warning'),
@@ -152,7 +149,7 @@ class PatientRecordResource extends Resource
                 FilamentExportBulkAction::make('export'),
             ])
             ->headerActions([
-                FilamentExportHeaderAction::make('export')->hidden(auth()->user()->role_id == 4)
+                FilamentExportHeaderAction::make('export')->hidden(auth()->user()->role_id == 4),
             ]);
     }
 
@@ -176,6 +173,7 @@ class PatientRecordResource extends Resource
     {
         // dd(self::getModel()::where('date_of_consultation',now())->count());
         $date = Carbon::now()->toDateString();
+
         return PatientRecord::all()->where('date_of_consultation', $date)->count();
     }
 }

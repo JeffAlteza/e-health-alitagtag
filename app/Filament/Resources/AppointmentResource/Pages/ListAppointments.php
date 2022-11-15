@@ -16,5 +16,4 @@ class ListAppointments extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
-    
 }

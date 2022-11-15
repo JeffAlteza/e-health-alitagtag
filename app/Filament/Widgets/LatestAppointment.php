@@ -5,8 +5,6 @@ namespace App\Filament\Widgets;
 use App\Filament\Resources\AppointmentResource;
 use App\Models\Appointment;
 use Carbon\Carbon;
-use Closure;
-use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -15,7 +13,8 @@ use Illuminate\Database\Eloquent\Builder;
 class LatestAppointment extends BaseWidget
 {
     protected static ?int $sort = 5;
-    protected int | string |array $columnSpan = 'full'; 
+
+    protected int | string |array $columnSpan = 'full';
 
     public function getDefaultTableRecordsPerPageSelectOption(): int
     {
@@ -35,7 +34,7 @@ class LatestAppointment extends BaseWidget
     protected function getTableQuery(): Builder
     {
         $dateWeek = Carbon::now()->subDays(7);
-        // return Appointment::where('date', '>', $dateWeek); 
+        // return Appointment::where('date', '>', $dateWeek);
         return AppointmentResource::getEloquentQuery()->take(5);
     }
 
@@ -58,9 +57,10 @@ class LatestAppointment extends BaseWidget
                         'danger' => 'Cancelled',
                         'warning' => 'Pending',
                         'success' => 'Success',
-                    ])->sortable()->searchable()
+                    ])->sortable()->searchable(),
         ];
     }
+
     public static function canView(): bool
     {
         return auth()->user()->role_id != 4;
