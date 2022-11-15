@@ -63,10 +63,14 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <!-- <span class="navbar-toggler-awesome fas fa-bars"></span>-->
                 <span class="navbar-toggler-awesome fas" style="height: 30px; width: 30px; display: flex; align-items: center;">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="#00000" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                </svg>
-                </span> 
+                    <!-- <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="#00000" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                    </svg> -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+
+                </span>
             </button>
             <!-- end of mobile menu toggle button -->
 
@@ -135,7 +139,7 @@
         <div class="cards-1">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-lg-12 mt-4">
                         <div class="above-heading">MAKE AN APPOINTMENT</div>
                         <h2 class="h2-heading">APPOINTMENT WILL BE MUCH MORE EASIER WITH THESE SIMPLE STEPS</h2>
                     </div> <!-- end of col -->
