@@ -260,7 +260,6 @@
         </div> <!-- end of footer -->
         <!-- end of footer -->
 
-
         <!-- Copyright -->
         <div class="copyright">
             <div class="container">
