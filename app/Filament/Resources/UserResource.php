@@ -95,13 +95,10 @@ class UserResource extends Resource
                         DatePicker::make('created_until'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        $date = Carbon::now()->toString();
-                        $yesterday = Carbon::yesterday();
-
                         return $query
                             ->when(
                                 $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>', $yesterday),
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
                             )
                             ->when(
                                 $data['created_until'],
