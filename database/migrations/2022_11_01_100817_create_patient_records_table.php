@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('philhealth_id')->nullable();
             $table->string('address')->nullable();
             $table->integer('age')->nullable();
-            $table->date('phone_number')->nullable();
+            $table->string('phone_number')->nullable();
             $table->date('birthday')->nullable();
             $table->date('date_of_consultation')->nullable();
             $table->string('time_of_consultation')->nullable();

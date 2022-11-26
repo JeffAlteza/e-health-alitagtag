@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use App\Models\DoctorSchedule;
 use App\Models\User;
 use Carbon\Carbon;
+use Closure;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
@@ -44,20 +45,31 @@ class DoctorScheduleResource extends Resource
         return $form
             ->schema([
                 Card::make()->schema([
+                    Select::make('category')
+                        ->options(
+                            [
+                                'Dental' => 'Dental',
+                                'Medical/Checkup' => 'Medical/Check Up',
+                                'OB' => 'OB'
+                            ]
+                        )
+                        ->label('Category')
+                        ->reactive()
+                        ->afterStateUpdated(fn (callable $set) => $set('doctor_id', null))
+                        ->required(),
+                        
                     Select::make('doctor_id')
-                        ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
+                        ->options(
+                            function (callable $get) {
+                                return User::all()->where('category', $get('category'))->pluck('name', 'id');
+                            }
+                        )
                         ->label('Doctor Name')
+                        ->disabled(fn (Closure $get) => $get('category') == null)
                         ->required(),
 
-                    Select::make('category')
-                        ->options([
-                            'Dental' => 'Dental',
-                            'Medical/Checkup' => 'Medical/Check Up',
-                            'OB' => 'OB',
-                            'Other' => 'Other',
-                        ])->required(),
-
                     DatePicker::make('date')
+                        ->label('Date Availability')
                         ->default(now())
                         ->required(),
 
@@ -97,8 +109,9 @@ class DoctorScheduleResource extends Resource
                 Filter::make('schedule_at')
                     ->form([
                         DatePicker::make('schedule_from')
-                        ->default(Carbon::now()),
-                        DatePicker::make('schedule_until'),
+                            ->default(Carbon::now()->subDay(1)),
+                        DatePicker::make('schedule_until')
+                            ->default(Carbon::now()),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -115,7 +128,7 @@ class DoctorScheduleResource extends Resource
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
-                Action::make('book')
+                Action::make('appointment')
                     ->disabled(fn (DoctorSchedule $record) => $record->status == 'unavailable')
                     ->modalWidth('lg')
                     ->icon('heroicon-s-document-text')
@@ -126,24 +139,24 @@ class DoctorScheduleResource extends Resource
                             'gender' => $data['gender'],
                             'birthday' => $data['birthday'],
                             'phone_number' => $data['phone_number'],
-                            'category' => $data['category'],
                             'specification' => $data['specification'],
                             // 'date' => TextColumn::get,
                             'status' => 'Pending',
                             'user_id' => auth()->user()->id,
+                            'category' => $record->category,
                             'doctor_id' => $record->doctor_id,
                             'date' => $record->date,
                         ]);
                         // $appointment = $this->record;
-                        Filament::notify(status: 'success', message: 'Appointment Successfully');
+                        $user = auth()->user()->name;
+                        Filament::notify(status: 'success', message: "**Good day {$user}!, you have successfully book an appointment.**");
                         // $recipient = [auth()->user()->role_id==1,auth()->user()->role_id==$record->doctor_id];
-                        $user = auth()->user();
-                        Notification::make()
-                            ->title('Appointment Created Successfully')
-                            ->icon('heroicon-o-check-circle')
-                            ->body("**Good day {$user}!, you have successfully book an appointment. You only need to show up on the scheduled date, thank you!.**")
-                            ->iconColor('success')
-                            ->sendToDatabase($user);
+                        // Notification::make()
+                        //     ->title('Appointment Created Successfully')
+                        //     ->icon('heroicon-o-check-circle')
+                        //     ->body("**Good day {$user}!, you have successfully book an appointment. You only need to show up on the scheduled date, thank you!.**")
+                        //     ->iconColor('success')
+                        //     ->sendToDatabase($user);
 
                         // Notification::make()
                         //     ->title('Appointment Created Successfully')
@@ -167,13 +180,6 @@ class DoctorScheduleResource extends Resource
                             ->tel()
                             ->required()
                             ->maxLength(255),
-                        Select::make('category')
-                            ->options([
-                                'Dental' => 'Dental',
-                                'Check Up' => 'Check Up',
-                                'Medical' => 'Medical',
-                                'Other' => 'Other',
-                            ])->required(),
                         Select::make('specification')
                             ->options([
                                 'Infant' => 'Infant',

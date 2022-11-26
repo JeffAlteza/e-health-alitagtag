@@ -18,7 +18,7 @@ class PatientRecordPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        // return true;
         return auth()->user()->role_id != 4;
     }
 

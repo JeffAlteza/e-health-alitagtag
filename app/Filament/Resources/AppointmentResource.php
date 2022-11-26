@@ -36,6 +36,7 @@ class AppointmentResource extends Resource
     protected static ?string $navigationGroup = 'Manage';
 
     protected static ?string $recordTitleAttribute = 'name';
+    
 
     protected static ?int $navigationSort = 2;
 
@@ -113,6 +114,7 @@ class AppointmentResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')->label('Appointment No.'),
                 TextColumn::make('user.name'),
                 TextColumn::make('name'),
                 // TextColumn::make('gender'),
@@ -129,7 +131,7 @@ class AppointmentResource extends Resource
                     ]),
 
             ])
-            ->defaultSort('date', 'desc')
+            ->defaultSort('id', 'desc')
             ->filters([
                 SelectFilter::make('status')
                     ->hidden(auth()->user()->role_id == 4)
@@ -139,14 +141,25 @@ class AppointmentResource extends Resource
                         'Cancelled' => 'Cancelled',
                     ])
                     ->default('Pending'),
-                Filter::make('appointment_at')
+                Filter::make('date')
                     ->hidden(auth()->user()->role_id == 4)
                     ->form([
                         DatePicker::make('appointment_from')
-                            ->default(Carbon::now()),
+                            ->default(Carbon::now()->subDay(1)),
                         DatePicker::make('appointment_until')
                             ->default(Carbon::now()),
                     ])
+                    // ->query(function (Builder $query, array $data): Builder {
+                    //     return $query
+                    //         ->when(
+                    //             $data['appointment_from'],
+                    //             fn (Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
+                    //         )
+                    //         ->when(
+                    //             $data['appointment_until'],
+                    //             fn (Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
+                    //         );
+                    // }),
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
                             ->when(
@@ -157,7 +170,7 @@ class AppointmentResource extends Resource
                                 $data['appointment_until'],
                                 fn (Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
                             );
-                    }),
+                    })
             ])
             ->actions([
                 ActionGroup::make([
@@ -167,9 +180,12 @@ class AppointmentResource extends Resource
 
                     Action::make('cancel')
                         // ->disabled(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
-                        ->hidden(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
+                        ->hidden(fn (Appointment $record) => $record->status == 'Success' || 'Cancelled')
                         // ->hidden(auth()->user()->role_id != 4)
                         ->requiresConfirmation()
+                        ->modalHeading('Cancel Appointment')
+                        ->modalSubheading('Are you sure you\'d like to Cancel these appointment? This cannot be undone.')
+                        ->modalButton('Proceed')
                         ->icon('heroicon-s-x-circle')
                         ->color('danger')
                         ->action(
@@ -177,13 +193,11 @@ class AppointmentResource extends Resource
                                 $record->update([
                                     'status' => 'Cancelled',
                                 ]);
-                                Filament::notify(status: 'success', message: 'Cancelled Appointment');
+                                Filament::notify(status: 'success', message: 'Appointment Cancelled');
                             }
                         ),
                     Action::make('success')
-                        // ->disabled(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
-                        ->hidden(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
-                        ->hidden(auth()->user()->role_id == 4)
+                        ->hidden((fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled' || auth()->user()->role_id == 4))
                         ->requiresConfirmation()
                         ->icon('heroicon-s-check-circle')
                         ->color('primary')
@@ -196,9 +210,7 @@ class AppointmentResource extends Resource
                             }
                         ),
                     Action::make('pending')
-                        // ->disabled(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
-                        ->hidden(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Pending')
-                        ->hidden(auth()->user()->role_id == 4)
+                        ->hidden(fn (Appointment $record) => $record->status == 'Pending' || $record->status == 'Cancelled' || auth()->user()->role_id == 4)
                         ->requiresConfirmation()
                         ->icon('heroicon-s-minus-circle')
                         ->color('warning')

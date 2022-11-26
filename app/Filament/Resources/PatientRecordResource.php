@@ -173,4 +173,14 @@ class PatientRecordResource extends Resource
 
         return PatientRecord::all()->where('date_of_consultation', $date)->count();
     }
+
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     if (auth()->user()->role_id == 4) {
+    //         return parent::getEloquentQuery()
+    //             ->where('name', auth()->user()->id);
+    //     }
+
+    //     return parent::getEloquentQuery()->withoutGlobalScopes();
+    // }
 }

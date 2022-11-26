@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Carbon\Carbon;
+use Closure;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -63,8 +64,19 @@ class UserResource extends Resource
 
                     Select::make('role_id')
                         ->relationship('role', 'name')
+                        ->reactive()
                         ->required()
                         ->label('Roles'),
+
+                    Select::make('category')
+                        ->options([
+                            'Dental' => 'Dental',
+                            'Medical/Checkup' => 'Medical/Check Up',
+                            'OB' => 'OB'
+                        ]
+                        )
+                        ->hidden(fn (Closure $get) => $get('role_id') != 3)
+                        ->required()
                 ])->columns(2),
             ]);
     }

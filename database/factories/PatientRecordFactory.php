@@ -18,7 +18,7 @@ class PatientRecordFactory extends Factory
     {
         return [
             //
-            'patient_number' => fake()->randomNumber(),
+            'patient_number' => fake()->unique()->numberBetween(0001, 1000),
             'name' => fake()->name(),
             'address' => fake()->address(),
             'age' => fake()->numberBetween(1, 100),
