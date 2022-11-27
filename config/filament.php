@@ -261,7 +261,7 @@ return [
     |
     */
 
-    'favicon' => asset('/Images/favicon.ico'),
+    'favicon' => '/Images/favicon.ico',
 
     /*
     |--------------------------------------------------------------------------

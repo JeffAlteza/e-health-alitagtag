@@ -17,18 +17,18 @@ class SuccessConsultationChart extends BarChartWidget
 
     protected function getData(): array
     {
-        $january = PatientRecord::whereMonth('date_of_consultation', '1')->count();
-        $february = PatientRecord::whereMonth('date_of_consultation', '2')->count();
-        $march = PatientRecord::whereMonth('date_of_consultation', '3')->count();
-        $april = PatientRecord::whereMonth('date_of_consultation', '4')->count();
-        $may = PatientRecord::whereMonth('date_of_consultation', '5')->count();
-        $june = PatientRecord::whereMonth('date_of_consultation', '6')->count();
-        $july = PatientRecord::whereMonth('date_of_consultation', '7')->count();
-        $august = PatientRecord::whereMonth('date_of_consultation', '8')->count();
-        $september = PatientRecord::whereMonth('date_of_consultation', '9')->count();
-        $october = PatientRecord::whereMonth('date_of_consultation', '10')->count();
-        $november = PatientRecord::whereMonth('date_of_consultation', '11')->count();
-        $december = PatientRecord::whereMonth('date_of_consultation', '12')->count();
+        $january = PatientRecord::whereMonth('date_of_consultation', '1')->whereYear('date_of_consultation', now('Y'))->count();
+        $february = PatientRecord::whereMonth('date_of_consultation', '2')->whereYear('date_of_consultation', now('Y'))->count();
+        $march = PatientRecord::whereMonth('date_of_consultation', '3')->whereYear('date_of_consultation', now('Y'))->count();
+        $april = PatientRecord::whereMonth('date_of_consultation', '4')->whereYear('date_of_consultation', now('Y'))->count();
+        $may = PatientRecord::whereMonth('date_of_consultation', '5')->whereYear('date_of_consultation', now('Y'))->count();
+        $june = PatientRecord::whereMonth('date_of_consultation', '6')->whereYear('date_of_consultation', now('Y'))->count();
+        $july = PatientRecord::whereMonth('date_of_consultation', '7')->whereYear('date_of_consultation', now('Y'))->count();
+        $august = PatientRecord::whereMonth('date_of_consultation', '8')->whereYear('date_of_consultation', now('Y'))->count();
+        $september = PatientRecord::whereMonth('date_of_consultation', '9')->whereYear('date_of_consultation', now('Y'))->count();
+        $october = PatientRecord::whereMonth('date_of_consultation', '10')->whereYear('date_of_consultation', now('Y'))->count();
+        $november = PatientRecord::whereMonth('date_of_consultation', '11')->whereYear('date_of_consultation', now('Y'))->count();
+        $december = PatientRecord::whereMonth('date_of_consultation', '12')->whereYear('date_of_consultation', now('Y'))->count();
 
         return [
             'datasets' => [

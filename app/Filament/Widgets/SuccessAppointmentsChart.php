@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Appointment;
+use Carbon\Carbon;
 use Filament\Widgets\BarChartWidget;
 
 class SuccessAppointmentsChart extends BarChartWidget
@@ -27,7 +28,7 @@ class SuccessAppointmentsChart extends BarChartWidget
         $august = Appointment::whereMonth('date', '8')->where('status', 'Success')->count();
         $september = Appointment::whereMonth('date', '9')->where('status', 'Success')->count();
         $october = Appointment::whereMonth('date', '10')->where('status', 'Success')->count();
-        $november = Appointment::whereMonth('date', '11')->where('status', 'Success')->count();
+        $november = Appointment::whereMonth('date', '11')->where('status', 'Success')->whereYear('date', '2022')->count();
         $december = Appointment::whereMonth('date', '12')->where('status', 'Success')->count();
 
         return [
