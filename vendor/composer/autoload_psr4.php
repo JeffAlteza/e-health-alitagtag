@@ -57,6 +57,7 @@ return array(
     'Savannabits\\Flatpickr\\Database\\Factories\\' => array($vendorDir . '/savannabits/filament-flatpickr/database/factories'),
     'Savannabits\\Flatpickr\\' => array($vendorDir . '/savannabits/filament-flatpickr/src'),
     'Sabberworm\\CSS\\' => array($vendorDir . '/sabberworm/php-css-parser/src'),
+    'Saade\\FilamentFullCalendar\\' => array($vendorDir . '/saade/filament-fullcalendar/src'),
     'RyanChandler\\BladeCaptureDirective\\Database\\Factories\\' => array($vendorDir . '/ryangjchandler/blade-capture-directive/database/factories'),
     'RyanChandler\\BladeCaptureDirective\\' => array($vendorDir . '/ryangjchandler/blade-capture-directive/src'),
     'Ramsey\\Uuid\\' => array($vendorDir . '/ramsey/uuid/src'),

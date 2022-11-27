@@ -277,6 +277,18 @@ class AppointmentResource extends Resource
                 ->where('user_id', auth()->user()->id);
         }
 
+        if (auth()->user()->role_id == 3) {
+            return parent::getEloquentQuery()
+                ->where('doctor_id', auth()->user()->id);
+        }
+
         return parent::getEloquentQuery()->withoutGlobalScopes();
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            AppointmentResource\Widgets\MyCalendar::class,
+        ];
     }
 }
