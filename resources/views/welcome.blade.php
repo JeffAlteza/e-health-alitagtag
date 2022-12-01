@@ -178,7 +178,7 @@
                             </div>
                             <div class="card-body">
                                 <h4 class="card-title">Appointment Booked</h4>
-                                <p>You are now successfully book an appointment. Show up on the said date and bring necessary documents</p>
+                                <p>After being approved, you have now successfully scheduled an appointment. Show up on the said date and bring necessary documents</p>
                             </div>
                         </div>
                         <!-- end of card -->

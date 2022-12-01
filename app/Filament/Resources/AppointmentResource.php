@@ -36,7 +36,7 @@ class AppointmentResource extends Resource
     protected static ?string $navigationGroup = 'Manage';
 
     protected static ?string $recordTitleAttribute = 'name';
-    
+
 
     protected static ?int $navigationSort = 2;
 
@@ -102,7 +102,8 @@ class AppointmentResource extends Resource
                         ->options([
                             'Cancelled' => 'Cancelled',
                             'Pending' => 'Pending',
-                            'Success' => 'Success',
+                            'Approved' => 'Approved',
+                            'Completed' => 'Completed',
                         ])
                         ->default('Pending')
                         ->required(),
@@ -127,7 +128,8 @@ class AppointmentResource extends Resource
                     ->colors([
                         'danger' => 'Cancelled',
                         'warning' => 'Pending',
-                        'primary' => 'Success',
+                        'success' => 'Completed',
+                        'primary' => 'Approved',
                     ]),
 
             ])
@@ -136,7 +138,8 @@ class AppointmentResource extends Resource
                 SelectFilter::make('status')
                     ->hidden(auth()->user()->role_id == 4)
                     ->options([
-                        'Success' => 'Success',
+                        'Completed' => 'Completed',
+                        'Approved' => 'Approved',
                         'Pending' => 'Pending',
                         'Cancelled' => 'Cancelled',
                     ])
@@ -176,11 +179,11 @@ class AppointmentResource extends Resource
                 ActionGroup::make([
                     ViewAction::make()->color('warning'),
                     EditAction::make()
-                        ->hidden(fn (Appointment $record) => auth()->user()->role_id == 4 && ($record->status == 'Success' || $record->status == 'Cancelled')),
+                        ->hidden(fn (Appointment $record) => auth()->user()->role_id == 4 && ($record->status == 'Completed' || $record->status == 'Cancelled')),
 
                     Action::make('cancel')
-                        // ->disabled(fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled')
-                        ->hidden(fn (Appointment $record) => $record->status == 'Success' || 'Cancelled')
+                        // ->disabled(fn (Appointment $record) => $record->status == 'Completed' || $record->status == 'Cancelled')
+                        ->hidden(fn (Appointment $record) => $record->status == 'Completed' || $record->status == 'Cancelled')
                         // ->hidden(auth()->user()->role_id != 4)
                         ->requiresConfirmation()
                         ->modalHeading('Cancel Appointment')
@@ -196,19 +199,6 @@ class AppointmentResource extends Resource
                                 Filament::notify(status: 'success', message: 'Appointment Cancelled');
                             }
                         ),
-                    Action::make('success')
-                        ->hidden((fn (Appointment $record) => $record->status == 'Success' || $record->status == 'Cancelled' || auth()->user()->role_id == 4))
-                        ->requiresConfirmation()
-                        ->icon('heroicon-s-check-circle')
-                        ->color('primary')
-                        ->action(
-                            function (Appointment $record, array $data): void {
-                                $record->update([
-                                    'status' => 'Success',
-                                ]);
-                                Filament::notify(status: 'success', message: 'Appointment Success');
-                            }
-                        ),
                     Action::make('pending')
                         ->hidden(fn (Appointment $record) => $record->status == 'Pending' || $record->status == 'Cancelled' || auth()->user()->role_id == 4)
                         ->requiresConfirmation()
@@ -219,7 +209,33 @@ class AppointmentResource extends Resource
                                 $record->update([
                                     'status' => 'Pending',
                                 ]);
-                                Filament::notify(status: 'success', message: 'Appointmen status changed to Pending');
+                                Filament::notify(status: 'success', message: 'Appointment status changed to Pending');
+                            }
+                        ),
+                    Action::make('completed')
+                        ->hidden((fn (Appointment $record) => $record->status != 'Approved' || auth()->user()->role_id == 4))
+                        ->requiresConfirmation()
+                        ->icon('heroicon-s-check-circle')
+                        ->color('primary')
+                        ->action(
+                            function (Appointment $record, array $data): void {
+                                $record->update([
+                                    'status' => 'Completed',
+                                ]);
+                                Filament::notify(status: 'success', message: 'Appointment Completed');
+                            }
+                        ),
+                    Action::make('approved')
+                        ->hidden(fn (Appointment $record) => $record->status != 'Pending' || auth()->user()->role_id == 4)
+                        ->requiresConfirmation()
+                        ->icon('heroicon-s-thumb-up')
+                        ->color('primary')
+                        ->action(
+                            function (Appointment $record, array $data): void {
+                                $record->update([
+                                    'status' => 'Approved',
+                                ]);
+                                Filament::notify(status: 'success', message: 'Appointment Approved!');
                             }
                         ),
                 ]),

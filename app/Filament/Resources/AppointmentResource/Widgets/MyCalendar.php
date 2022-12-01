@@ -11,7 +11,7 @@ class MyCalendar extends FullCalendarWidget
     // protected static string $view = 'filament.resources.appointment-resource.widgets.my-calendar';
     public function getViewData(): array
     {
-        return Appointment::where('status', 'pending')->where('doctor_id', auth()->user()->id)
+        return Appointment::where('status', 'Approved')->where('doctor_id', auth()->user()->id)
             ->get()
             ->map(function ($data) {
                 return [

@@ -49,7 +49,7 @@ class DoctorScheduleResource extends Resource
                         ->options(
                             [
                                 'Dental' => 'Dental',
-                                'Medical/Checkup' => 'Medical/Check Up',
+                                'Medical/Check Up' => 'Medical/Check Up',
                                 'OB' => 'OB'
                             ]
                         )
@@ -57,7 +57,7 @@ class DoctorScheduleResource extends Resource
                         ->reactive()
                         ->afterStateUpdated(fn (callable $set) => $set('doctor_id', null))
                         ->required(),
-                        
+
                     Select::make('doctor_id')
                         ->options(
                             function (callable $get) {
@@ -73,12 +73,36 @@ class DoctorScheduleResource extends Resource
                         ->default(now())
                         ->required(),
 
-                    // Flatpickr::make('read_at')->default(now())->enableTime(),
-                    TextInput::make('time_start')
-                        ->required(),
+                    // TextInput::make('time_start')
+                    //     ->required(),
 
-                    TextInput::make('time_end')
-                        ->required(),
+                    // TextInput::make('time_end')
+                    //     ->required(),
+
+                    Select::make('time_start')
+                        ->options([
+                            '08:00 AM' => '08:00 AM',
+                            '09:00 AM' => '09:00 AM',
+                            '10:00 AM' => '10:00 AM',
+                            '11:00 AM' => '11:00 AM',
+                            '12:00 PM' => '12:00 PM',
+                            '01:00 PM' => '01:00 PM',
+                            '02:00 PM' => '02:00 PM',
+                            '03:00 PM' => '03:00 PM',
+                        ])->required(),
+
+                    Select::make('time_end')
+                        ->options([
+                            '09:00 AM' => '09:00 AM',
+                            '10:00 AM' => '10:00 AM',
+                            '11:00 AM' => '11:00 AM',
+                            '12:00 PM' => '12:00 PM',
+                            '01:00 PM' => '01:00 PM',
+                            '02:00 PM' => '02:00 PM',
+                            '03:00 PM' => '03:00 PM',
+                            '04:00 PM' => '04:00 PM',
+                            '05:00 PM' => '05:00 PM',
+                        ])->required(),
 
                     Select::make('status')
                         ->options([

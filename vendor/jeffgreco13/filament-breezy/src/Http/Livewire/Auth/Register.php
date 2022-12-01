@@ -4,6 +4,7 @@ namespace JeffGreco13\FilamentBreezy\Http\Livewire\Auth;
 
 use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +17,7 @@ class Register extends Component implements Forms\Contracts\HasForms
 
     public $name;
     public $email;
+    public $address;
     public $password;
     public $password_confirm;
 
@@ -40,10 +42,9 @@ class Register extends Component implements Forms\Contracts\HasForms
                 ->label(__('filament-breezy::default.fields.name'))
                 ->required(),
             Forms\Components\TextInput::make('email')
-            ->label('Email (optional)')
-                // ->label(__('filament-breezy::default.fields.email'))
-                // ->required()
+                ->label('Email')
                 ->email()
+                ->required()
                 ->unique(table: config('filament-breezy.user_model')),
             Forms\Components\TextInput::make('password')
                 ->label(__('filament-breezy::default.fields.password'))
@@ -55,6 +56,30 @@ class Register extends Component implements Forms\Contracts\HasForms
                 ->required()
                 ->password()
                 ->same('password'),
+            Select::make('address')
+                ->options([
+                    'Balagbag' => 'Balagbag',
+                    'Concepcion' => 'Concepcion',
+                    'Concordia' => 'Concordia',
+                    'Dalipit East' => 'Dalipit East',
+                    'Dalipit West' => 'Dalipit West',
+                    'Dominador East' => 'Dominador East',
+                    'Dominador West' => 'Dominador West',
+                    'Munlawin' => 'Munlawin',
+                    'Muzon Primero' => 'Muzon Primero',
+                    'Muzon Segundo' => 'Muzon Segundo',
+                    'Pinagkurusan' => 'Pinagkurusan',
+                    'Ping-As' => 'Ping-As',
+                    'Poblacion East' => 'Poblacion East',
+                    'Poblacion West' => 'Poblacion West',
+                    'Salvador Agito' => 'Salvador Agito',
+                    'San Jose' => 'San Jose',
+                    'San Juan' => 'San Juan',
+                    'Santa Cruz' => 'Santa Cruz',
+                    'Tadlac' => 'Tadlac',
+
+                ])
+                ->required(),
         ];
     }
 
@@ -63,6 +88,7 @@ class Register extends Component implements Forms\Contracts\HasForms
         $preparedData = [
             'name' => $data['name'],
             'email' => $data['email'],
+            'address' => $data['address'],
             'password' => Hash::make($data['password']),
         ];
 

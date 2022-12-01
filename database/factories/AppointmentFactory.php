@@ -25,7 +25,7 @@ class AppointmentFactory extends Factory
             'category' => fake()->randomElement($array = ['Dental', 'Check up', 'Medical', 'other']),
             'specification' => fake()->randomElement($array = ['Infant', 'Child', 'Teen', 'Adult', 'Senior']),
             'date' => fake()->dateTimeBetween($startDate = '-10 month', $endDate = now(), $timezone = null),
-            'status' => fake()->randomElement($array = ['Success', 'Pending', 'Cancelled']),
+            'status' => fake()->randomElement($array = ['Completed', 'Pending', 'Cancelled', 'Approved']),
             'user_id' => fake()->randomElement($array = [7,8,9]),
             'doctor_id' => fake()->randomElement($array = [3,4,5,6]),
         ];
