@@ -75,8 +75,8 @@ class AppointmentOverview extends BaseWidget
                     // $countThursday,0,
                     // $countFriday,0,
                     $countEndWeek,
-                ]),
-            Card::make('Approved Appointments Today', Appointment::where('status', 'Approved')->where('date', $date)->count())
+            ]),
+            Card::make('Total Approved Appointments Today', Appointment::where('status', 'Approved')->where('date', $date)->count())
                 ->color('primary')
                 ->description($date)
                 ->descriptionIcon('heroicon-s-clipboard-copy')

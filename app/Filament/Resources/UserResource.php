@@ -152,13 +152,13 @@ class UserResource extends Resource
     {
         // if role id of logged in user is 2, table must display all record with role id = 4
         // else, display all record
-        if (auth()->user()->role_id == 2) {
-            return parent::getEloquentQuery()
-                ->where('role_id', 4);
-        } else {
+        // if (auth()->user()->role_id == 2) {
+        //     return parent::getEloquentQuery()
+        //         ->where('role_id', 4);
+        // } 
             // code here
             return parent::getEloquentQuery();
             // ->where('role_id', '!=', 1);
-        }
+        
     }
 }

@@ -136,7 +136,7 @@ class AppointmentResource extends Resource
             ->defaultSort('id', 'desc')
             ->filters([
                 SelectFilter::make('status')
-                    ->hidden(auth()->user()->role_id == 4)
+                    ->hidden(auth()->user()->role_id == 4 || 3)
                     ->options([
                         'Completed' => 'Completed',
                         'Approved' => 'Approved',
@@ -275,12 +275,19 @@ class AppointmentResource extends Resource
                 ->where('user_id', auth()->user()->id)
                 ->count();
         }
-        // dd('admin');
+
+        if (auth()->user()->role_id == 3) {
+            // dd('patient');
+            return parent::getEloquentQuery()
+                ->where('doctor_id', auth()->user()->id)
+                ->where('date', $date)
+                ->where('status', 'Approved')
+                ->count();
+        }
+
         return parent::getEloquentQuery()
             ->where('date', $date)
-            ->where('status', 'Pending')
             ->count();
-        // return self::getModel()::where('date', $date)->count();
     }
 
     public static function getEloquentQuery(): Builder
@@ -295,7 +302,8 @@ class AppointmentResource extends Resource
 
         if (auth()->user()->role_id == 3) {
             return parent::getEloquentQuery()
-                ->where('doctor_id', auth()->user()->id);
+                ->where('doctor_id', auth()->user()->id)
+                ->where('status', 'Approved');
         }
 
         return parent::getEloquentQuery()->withoutGlobalScopes();
