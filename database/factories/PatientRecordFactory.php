@@ -26,7 +26,7 @@ class PatientRecordFactory extends Factory
             'birthday' => fake()->date(),
             'phone_number' => fake()->phoneNumber(),
             'time_of_consultation' => fake()->time(),
-            'date_of_consultation' => fake()->dateTimeBetween($startDate = '-10 month', $endDate = now(), $timezone = null),
+            'date_of_consultation' => fake()->dateTimeBetween($startDate = '-11 month', $endDate = now(), $timezone = null),
         ];
     }
 }

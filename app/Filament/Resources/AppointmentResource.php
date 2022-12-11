@@ -136,7 +136,7 @@ class AppointmentResource extends Resource
             ->defaultSort('id', 'desc')
             ->filters([
                 SelectFilter::make('status')
-                    ->hidden(auth()->user()->role_id == 4 || 3)
+                    ->hidden(auth()->user()->role_id == 3 || auth()->user()->role_id == 4 )
                     ->options([
                         'Completed' => 'Completed',
                         'Approved' => 'Approved',

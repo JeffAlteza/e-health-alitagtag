@@ -57,6 +57,7 @@ class LatestAppointment extends BaseWidget
                         'danger' => 'Cancelled',
                         'warning' => 'Pending',
                         'success' => 'Success',
+                        'success' => 'Approved',
                     ])->sortable()->searchable(),
         ];
     }

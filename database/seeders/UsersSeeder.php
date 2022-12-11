@@ -27,30 +27,24 @@ class UsersSeeder extends Seeder
         ]);
         
         User::factory()->create([
-            'name' => 'Doctor',
-            'email' => 'doctor@gmail.com',
-            'Category'=>'Dental',
-            'role_id' => '3',
-        ]);
-        User::factory()->create([
-            'name' => 'Doctor Jose',
-            'email' => 'doctorjose@gmail.com',
-            'Category'=>'Dental',
-            'role_id' => '3',
-        ]);
-        User::factory()->create([
-            'name' => 'Doctor Willie',
-            'email' => 'doctorwillie@gmail.com',
-            'Category'=>'OB',
-            'role_id' => '3',
-        ]);
-        User::factory()->create([
-            'name' => 'Doctor Josephine',
-            'email' => 'doctorjosephine@gmail.com',
+            'name' => 'Dra. Flordeliza V. Castillo',
+            'email' => 'flordeliza_castillo@gmail.com',
             'Category'=>'Medical/Check Up',
             'role_id' => '3',
         ]);
-
+        User::factory()->create([
+            'name' => 'Dr. Melanie Tordecialla Amurao',
+            'email' => 'melanie_amurao@gmail.com',
+            'Category'=>'Dental',
+            'role_id' => '3',
+        ]);
+        User::factory()->create([
+            'name' => 'Dr. Rochelle Punzalan',
+            'email' => 'rochelle_punzalan@gmail.com',
+            'Category'=>'OB',
+            'role_id' => '3',
+        ]);
+        
         User::factory()->create([
             'name' => 'Patient',
             'email' => 'patient@gmail.com',
