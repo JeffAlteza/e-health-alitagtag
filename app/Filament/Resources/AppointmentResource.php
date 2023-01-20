@@ -37,11 +37,12 @@ class AppointmentResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
+        $userRoleId = auth()->user()->role_id;
+        
         return $form
             ->schema([
                 Card::make()->schema([
@@ -52,15 +53,10 @@ class AppointmentResource extends Resource
                     // Select::make('doctor.name')
                     //     ->required(),
                     Select::make('doctor_id')
-                        ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
+                        ->options(User::where('role_id', '3')->pluck('name', 'id'))
                         ->label('Doctor Name')
-                        ->disabled(auth()->user()->role_id == 4)
+                        ->disabled($userRoleId == 4)
                         ->required(),
-                    // Select::make('doctor_id')
-                    // ->relationship('user','name')
-                    // ->options(User::all()->where('role_id', '3')->pluck('name', 'id'))
-                    // ->label('Doctor Name'),
-                    // ->disabled(auth()->user()->role_id = 4),
                     TextInput::make('name')
                         ->required()
                         ->maxLength(255),
@@ -95,10 +91,10 @@ class AppointmentResource extends Resource
                         ])->required(),
                     DatePicker::make('date')
                         ->label('Appointment Date')
-                        ->disabled(auth()->user()->role_id == 4)
+                        ->disabled($userRoleId == 4)
                         ->required(),
                     Select::make('status')
-                        ->disabled(auth()->user()->role_id == 4)
+                        ->disabled($userRoleId == 4)
                         ->options([
                             'Cancelled' => 'Cancelled',
                             'Pending' => 'Pending',
@@ -113,6 +109,8 @@ class AppointmentResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $userRoleId = auth()->user()->role_id;
+
         return $table
             ->columns([
                 TextColumn::make('id')->label('Appointment No.'),
@@ -136,7 +134,7 @@ class AppointmentResource extends Resource
             ->defaultSort('id', 'desc')
             ->filters([
                 SelectFilter::make('status')
-                    ->hidden(auth()->user()->role_id == 3 || auth()->user()->role_id == 4 )
+                    ->hidden($userRoleId == 3 || $userRoleId == 4 )
                     ->options([
                         'Completed' => 'Completed',
                         'Approved' => 'Approved',
@@ -145,24 +143,13 @@ class AppointmentResource extends Resource
                     ])
                     ->default('Pending'),
                 Filter::make('date')
-                    ->hidden(auth()->user()->role_id == 4)
+                    ->hidden($userRoleId == 4)
                     ->form([
                         DatePicker::make('appointment_from')
                             ->default(Carbon::now()->subDay(1)),
                         DatePicker::make('appointment_until')
                             ->default(Carbon::now()),
                     ])
-                    // ->query(function (Builder $query, array $data): Builder {
-                    //     return $query
-                    //         ->when(
-                    //             $data['appointment_from'],
-                    //             fn (Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
-                    //         )
-                    //         ->when(
-                    //             $data['appointment_until'],
-                    //             fn (Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
-                    //         );
-                    // }),
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
                             ->when(
@@ -179,12 +166,10 @@ class AppointmentResource extends Resource
                 ActionGroup::make([
                     ViewAction::make()->color('warning'),
                     EditAction::make()
-                        ->hidden(fn (Appointment $record) => auth()->user()->role_id == 4 && ($record->status == 'Completed' || $record->status == 'Cancelled')),
+                        ->hidden(fn (Appointment $record) => $userRoleId == 4 && ($record->status == 'Completed' || $record->status == 'Cancelled')),
 
                     Action::make('cancel')
-                        // ->disabled(fn (Appointment $record) => $record->status == 'Completed' || $record->status == 'Cancelled')
                         ->hidden(fn (Appointment $record) => $record->status == 'Completed' || $record->status == 'Cancelled')
-                        // ->hidden(auth()->user()->role_id != 4)
                         ->requiresConfirmation()
                         ->modalHeading('Cancel Appointment')
                         ->modalSubheading('Are you sure you\'d like to Cancel these appointment? This cannot be undone.')
@@ -200,7 +185,7 @@ class AppointmentResource extends Resource
                             }
                         ),
                     Action::make('pending')
-                        ->hidden(fn (Appointment $record) => $record->status == 'Pending' || $record->status == 'Cancelled' || auth()->user()->role_id == 4)
+                        ->hidden(fn (Appointment $record) => $record->status == 'Pending' || $record->status == 'Cancelled' || $userRoleId == 4)
                         ->requiresConfirmation()
                         ->icon('heroicon-s-minus-circle')
                         ->color('warning')
@@ -213,7 +198,7 @@ class AppointmentResource extends Resource
                             }
                         ),
                     Action::make('completed')
-                        ->hidden((fn (Appointment $record) => $record->status != 'Approved' || auth()->user()->role_id == 4))
+                        ->hidden((fn (Appointment $record) => $record->status != 'Approved' || $userRoleId == 4))
                         ->requiresConfirmation()
                         ->icon('heroicon-s-check-circle')
                         ->color('primary')
@@ -226,7 +211,7 @@ class AppointmentResource extends Resource
                             }
                         ),
                     Action::make('approved')
-                        ->hidden(fn (Appointment $record) => $record->status != 'Pending' || auth()->user()->role_id == 4)
+                        ->hidden(fn (Appointment $record) => $record->status != 'Pending' || $userRoleId == 4)
                         ->requiresConfirmation()
                         ->icon('heroicon-s-thumb-up')
                         ->color('primary')
@@ -246,15 +231,8 @@ class AppointmentResource extends Resource
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
                     ->label('Export All')
-                    ->hidden(auth()->user()->role_id == 4),
+                    ->hidden($userRoleId == 4),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
@@ -268,16 +246,16 @@ class AppointmentResource extends Resource
 
     protected static function getNavigationBadge(): ?string
     {
+        $userRoleId = auth()->user()->role_id;
+
         $date = Carbon::now()->toDateString();
-        if (auth()->user()->role_id == 4) {
-            // dd('patient');
+        if ($userRoleId == 4) {
             return parent::getEloquentQuery()
                 ->where('user_id', auth()->user()->id)
                 ->count();
         }
 
-        if (auth()->user()->role_id == 3) {
-            // dd('patient');
+        if ($userRoleId == 3) {
             return parent::getEloquentQuery()
                 ->where('doctor_id', auth()->user()->id)
                 ->where('date', $date)
@@ -292,15 +270,14 @@ class AppointmentResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        // if role id of logged in user is 4, table must display all record with role id = 4
-        // else, display all record
+        $userRoleId = auth()->user()->role_id;
 
-        if (auth()->user()->role_id == 4) {
+        if ($userRoleId == 4) {
             return parent::getEloquentQuery()
                 ->where('user_id', auth()->user()->id);
         }
 
-        if (auth()->user()->role_id == 3) {
+        if ($userRoleId == 3) {
             return parent::getEloquentQuery()
                 ->where('doctor_id', auth()->user()->id)
                 ->where('status', 'Approved');

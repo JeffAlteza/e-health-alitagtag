@@ -31,9 +31,9 @@ class PatientRecordResource extends Resource
 
     protected static ?string $navigationGroup = 'Manage';
 
-    protected static ?int $navigationSort = 3;
-
     protected static ?string $recordTitleAttribute = 'name';
+    
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -82,7 +82,6 @@ class PatientRecordResource extends Resource
                     ]),
                     Step::make('Vital Signs')->schema([
                         Card::make()->schema([
-
                             TextInput::make('BP')->label('BP'),
                             TextInput::make('RR')->label('RR'),
                             TextInput::make('PR')->label('PR'),
@@ -171,7 +170,7 @@ class PatientRecordResource extends Resource
         // dd(self::getModel()::where('date_of_consultation',now())->count());
         $date = Carbon::now()->toDateString();
 
-        return PatientRecord::all()->where('date_of_consultation', $date)->count();
+        return PatientRecord::whereDate('date_of_consultation', $date)->count();
     }
 
     // public static function getEloquentQuery(): Builder

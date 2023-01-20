@@ -21,11 +21,11 @@ class AppointmentOverview extends BaseWidget
         $startWeek = Carbon::now()->startOfWeek(Carbon::SUNDAY)->toDateString();
         $endWeek = Carbon::now()->endOfWeek(Carbon::SATURDAY)->toDateString();
 
-        $monday = Carbon::now()->now(Carbon::MONDAY)->toDateString();
-        $tuesday = Carbon::now()->now(Carbon::TUESDAY)->toDateString();
-        $wednesday = Carbon::now()->now(Carbon::WEDNESDAY)->toDateString();
-        $thursday = Carbon::now()->now(Carbon::THURSDAY)->toDateString();
-        $friday = Carbon::now()->now(Carbon::FRIDAY)->toDateString();
+        $monday = Carbon::now(Carbon::MONDAY)->toDateString();
+        $tuesday = Carbon::now(Carbon::TUESDAY)->toDateString();
+        $wednesday = Carbon::now(Carbon::WEDNESDAY)->toDateString();
+        $thursday = Carbon::now(Carbon::THURSDAY)->toDateString();
+        $friday = Carbon::now(Carbon::FRIDAY)->toDateString();
 
         $dateWeek = Carbon::now()->subDays(7);
         $datelastWeek = Carbon::now()->subDays(14);
@@ -55,7 +55,7 @@ class AppointmentOverview extends BaseWidget
         //     end: now()->endOfYear(),
         // )->count();
         return [
-            Card::make('Success Consultation Today', PatientRecord::all()->where('date_of_consultation', $date)->count())
+            Card::make('Success Consultation Today', PatientRecord::where('date_of_consultation', $date)->count())
                 ->color('primary')
                 ->description($date)
                 ->descriptionIcon('heroicon-s-clipboard-check')
@@ -63,7 +63,7 @@ class AppointmentOverview extends BaseWidget
                     0, $countTodayPatient, 0,
                     $countYesterdayPatient,
                 ]),
-            Card::make('Appointments this Week', Appointment::all()->whereBetween('date', [$startWeek, $endWeek])->count())
+            Card::make('Appointments this Week', Appointment::whereBetween('date', [$startWeek, $endWeek])->count())
                 ->color('primary')
                 ->description("{$startWeek} to {$endWeek}")
                 ->descriptionIcon('heroicon-s-clipboard-list')

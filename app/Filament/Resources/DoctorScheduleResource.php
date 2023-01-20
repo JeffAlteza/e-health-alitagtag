@@ -171,22 +171,10 @@ class DoctorScheduleResource extends Resource
                             'doctor_id' => $record->doctor_id,
                             'date' => $record->date,
                         ]);
-                        // $appointment = $this->record;
+
                         $user = auth()->user()->name;
                         Filament::notify(status: 'success', message: "**Good day {$user}!, you have successfully book an appointment.**");
-                        // $recipient = [auth()->user()->role_id==1,auth()->user()->role_id==$record->doctor_id];
-                        // Notification::make()
-                        //     ->title('Appointment Created Successfully')
-                        //     ->icon('heroicon-o-check-circle')
-                        //     ->body("**Good day {$user}!, you have successfully book an appointment. You only need to show up on the scheduled date, thank you!.**")
-                        //     ->iconColor('success')
-                        //     ->sendToDatabase($user);
 
-                        // Notification::make()
-                        //     ->title('Appointment Created Successfully')
-                        //     ->icon('heroicon-o-clipboard')
-                        //     ->body("**{$recipient->name}, .**")
-                        //     ->sendToDatabase($record->doctor_id);
                     })
                     ->form([
                         TextInput::make('name')
@@ -213,12 +201,8 @@ class DoctorScheduleResource extends Resource
                                 'Senior' => 'Senior',
                                 'PWD' => 'PWD',
                                 'Other' => 'Other',
-                            ])->required(),
-                        // TextInput::make('doctor_id'),
-                        // ->required(),
-                        // DatePicker::make('date')
-                        //     ->label('Appointment Date')
-                        //     ->required(),
+                            ])->required()
+                            
                     ])
                     ->modalHeading('Appointment')
                     ->modalSubheading('Fill up all the corresponding fields'),
@@ -229,13 +213,6 @@ class DoctorScheduleResource extends Resource
             ->headerActions([
                 FilamentExportHeaderAction::make('export')->hidden(auth()->user()->role_id == 4),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
@@ -252,13 +229,10 @@ class DoctorScheduleResource extends Resource
         $date = Carbon::now()->toDateString();
         if (auth()->user()->role_id == 4) {
             return parent::getEloquentQuery()
-                ->whereDate('date', '>=', $date)
-
-                ->count();
+                ->whereCount('date', '>=', $date);
         } else {
-            return self::getModel()::where('date', $date)->count();
+            return self::getModel()::whereDate('date', $date)->count();
         }
-        // return self::getModel()::count();
     }
 
     public static function getEloquentQuery(): Builder
@@ -270,7 +244,6 @@ class DoctorScheduleResource extends Resource
             return parent::getEloquentQuery()
                 ->whereDate('date', '>=', $date);
         } else {
-            // code here
             return parent::getEloquentQuery();
         }
     }
