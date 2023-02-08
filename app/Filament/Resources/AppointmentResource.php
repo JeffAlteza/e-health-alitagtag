@@ -26,6 +26,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class AppointmentResource extends Resource
 {
@@ -41,7 +42,10 @@ class AppointmentResource extends Resource
 
     public static function form(Form $form): Form
     {
-        
+        // for caching purposes, to load faster
+        $options = Cache::remember('doctors_list', 60, function () {
+            return User::where('role_id', '3')->pluck('name', 'id');
+            });
         return $form
             ->schema([
                 Card::make()->schema([
@@ -49,7 +53,7 @@ class AppointmentResource extends Resource
                         ->default(Auth::id())
                         ->disabled(),
                     Select::make('doctor_id')
-                        ->options(User::where('role_id', '3')->pluck('name', 'id'))
+                        ->options($options)
                         ->label('Doctor Name')
                         ->disabled(Auth::user()->isPatient())
                         ->required(),
@@ -115,6 +119,7 @@ class AppointmentResource extends Resource
                 TextColumn::make('doctor.name'),
                 TextColumn::make('date')
                     ->date(),
+                TextColumn::make('time'),
                 BadgeColumn::make('status')
                     ->colors([
                         'danger' => 'Cancelled',
