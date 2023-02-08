@@ -5,6 +5,7 @@ namespace App\Filament\Resources\AppointmentResource\Widgets;
 use App\Models\Appointment;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 use Filament\Widgets\Widget;
+use Illuminate\Support\Facades\Auth;
 
 class MyCalendar extends FullCalendarWidget
 {

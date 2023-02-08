@@ -7,6 +7,7 @@ use App\Models\DoctorSchedule;
 use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
+use Illuminate\Support\Facades\Auth;
 
 class DoctorAvailable extends BaseWidget
 {
