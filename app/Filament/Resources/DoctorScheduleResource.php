@@ -20,6 +20,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\BadgeColumn;
@@ -109,6 +110,7 @@ class DoctorScheduleResource extends Resource
                         ->options([
                             'available' => 'Available',
                             'unavailable' => 'Unavailable',
+                            'full' => 'Full',
                         ])->required(),
                 ])->columns(2),
             ]);
@@ -151,10 +153,8 @@ class DoctorScheduleResource extends Resource
                     }),
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
                 Action::make('appointment')
-                    ->disabled(fn (DoctorSchedule $record) => $record->status == 'unavailable')
+                    ->disabled(fn (DoctorSchedule $record) => $record->status == 'unavailable' || $record->status == 'full')
                     ->modalWidth('lg')
                     ->icon('heroicon-s-document-text')
                     ->action(function (DoctorSchedule $record, array $data): void {
@@ -175,7 +175,6 @@ class DoctorScheduleResource extends Resource
 
                         $user = auth()->user()->name;
                         Filament::notify(status: 'success', message: "**Good day {$user}!, you have successfully book an appointment.**");
-
                     })
                     ->form([
                         TextInput::make('name')
@@ -201,11 +200,33 @@ class DoctorScheduleResource extends Resource
                                 'Adult' => 'Adult',
                                 'Senior' => 'Senior',
                                 'PWD' => 'PWD',
+                            ])->required(),
+                        Select::make('time')
+                            ->options([
+                                'AM' => 'AM (Morning)',
+                                'PM' => 'PM (Afternoon)',
                             ])->required()
-                            
+
                     ])
                     ->modalHeading('Appointment')
                     ->modalSubheading('Fill up all the corresponding fields'),
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                    Action::make('full')
+                        ->hidden(fn (DoctorSchedule $record) => $record->status != 'available' || Auth::user()->isPatient())
+                        ->requiresConfirmation()
+                        ->icon('heroicon-s-thumb-up')
+                        ->color('primary')
+                        ->action(
+                            function (DoctorSchedule $record, array $data): void {
+                                $record->update([
+                                    'status' => 'full',
+                                ]);
+                                Filament::notify(status: 'success', message: 'Doctor schedule updated successfully!');
+                            }
+                        ),
+                ]),
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
