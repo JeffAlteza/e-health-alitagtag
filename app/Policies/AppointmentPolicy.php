@@ -68,7 +68,7 @@ class AppointmentPolicy
     public function delete(User $user, Appointment $appointment)
     {
         // return auth()->user();
-        return auth()->user()->role_id == 1;
+        return Auth::user()->isAdmin();
     }
 
     /**

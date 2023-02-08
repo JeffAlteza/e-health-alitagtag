@@ -29,6 +29,6 @@ class DoctorAvailable extends BaseWidget
 
     public static function canView(): bool
     {
-        return auth()->user()->role_id == 4;
+        return Auth::user()->isPatient();
     }
 }

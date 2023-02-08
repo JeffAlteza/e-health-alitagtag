@@ -22,6 +22,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class PatientRecordResource extends Resource
 {
@@ -145,7 +146,7 @@ class PatientRecordResource extends Resource
                 FilamentExportBulkAction::make('export'),
             ])
             ->headerActions([
-                FilamentExportHeaderAction::make('export')->hidden(auth()->user()->role_id == 4),
+                FilamentExportHeaderAction::make('export')->hidden(Auth::user()->isPatient()),
             ]);
     }
 
@@ -167,15 +168,13 @@ class PatientRecordResource extends Resource
 
     protected static function getNavigationBadge(): ?string
     {
-        // dd(self::getModel()::where('date_of_consultation',now())->count());
         $date = Carbon::now()->toDateString();
-
         return PatientRecord::whereDate('date_of_consultation', $date)->count();
     }
 
     // public static function getEloquentQuery(): Builder
     // {
-    //     if (auth()->user()->role_id == 4) {
+    //     if (Auth::user()->isPatient()) {
     //         return parent::getEloquentQuery()
     //             ->where('name', auth()->user()->id);
     //     }

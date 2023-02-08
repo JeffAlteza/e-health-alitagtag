@@ -27,6 +27,6 @@ class MyCalendar extends FullCalendarWidget
 
     public static function canView(?array $event = null): bool
     {
-        return auth()->user()->role_id == 3;
+        return Auth::user()->isDoctor();
     }
 }

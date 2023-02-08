@@ -54,7 +54,7 @@ class User extends Authenticatable implements FilamentUser
     //     return $this->hasMany(Roles::class);
     // }
 
-    public function role(): BelongsTo
+    public function role()
     {
         return $this->belongsTo(Roles::class);
     }
@@ -77,5 +77,21 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessFilament(): bool
     {
         return true;
+    }
+
+    public function isAdmin(){
+        return $this->role->name == 'Administrator';
+    }
+
+    public function isNurse(){
+        return $this->role->name == 'Nurse';
+    }
+
+    public function isDoctor(){
+        return $this->role->name == 'Doctor';
+    }
+
+    public function isPatient(){
+        return $this->role->name == 'Patient';
     }
 }

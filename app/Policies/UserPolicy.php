@@ -17,7 +17,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return auth()->user()->role_id == 1;
+        return Auth::user()->isAdmin();
     }
 
     /**
@@ -28,7 +28,7 @@ class UserPolicy
      */
     public function view(User $user)
     {
-        return auth()->user()->role_id == 1;
+        return Auth::user()->isAdmin();
     }
 
     /**
@@ -39,7 +39,7 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return auth()->user()->role_id == 1;
+        return Auth::user()->isAdmin();
     }
 
     /**
@@ -50,7 +50,7 @@ class UserPolicy
      */
     public function update(User $user)
     {
-        return auth()->user()->role_id == 1;
+        return Auth::user()->isAdmin();
     }
 
     /**
@@ -61,7 +61,7 @@ class UserPolicy
      */
     public function delete(User $user)
     {
-        return auth()->user()->role_id == 1;
+        return Auth::user()->isAdmin();
     }
 
     /**
@@ -72,6 +72,6 @@ class UserPolicy
      */
     public function deleteAny(User $user)
     {
-        return auth()->user()->role_id == 1;
+        return Auth::user()->isAdmin();
     }
 }

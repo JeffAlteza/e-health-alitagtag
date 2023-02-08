@@ -26,6 +26,7 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Savannabits\Flatpickr\Flatpickr;
 
 class DoctorScheduleResource extends Resource
@@ -200,7 +201,6 @@ class DoctorScheduleResource extends Resource
                                 'Adult' => 'Adult',
                                 'Senior' => 'Senior',
                                 'PWD' => 'PWD',
-                                'Other' => 'Other',
                             ])->required()
                             
                     ])
@@ -211,7 +211,7 @@ class DoctorScheduleResource extends Resource
                 // Tables\Actions\DeleteBulkAction::make(),
             ])
             ->headerActions([
-                FilamentExportHeaderAction::make('export')->hidden(auth()->user()->role_id == 4),
+                FilamentExportHeaderAction::make('export')->hidden(Auth::user()->isPatient()),
             ]);
     }
 
@@ -227,9 +227,9 @@ class DoctorScheduleResource extends Resource
     protected static function getNavigationBadge(): ?string
     {
         $date = Carbon::now()->toDateString();
-        if (auth()->user()->role_id == 4) {
+        if (Auth::user()->isPatient()) {
             return parent::getEloquentQuery()
-                ->whereCount('date', '>=', $date);
+                ->where('date', '>=', $date)->count();
         } else {
             return self::getModel()::whereDate('date', $date)->count();
         }
@@ -240,7 +240,7 @@ class DoctorScheduleResource extends Resource
         // if role id of logged in user is 2, table must display all record with role id = 4
         // else, display all record
         $date = Carbon::now();
-        if (auth()->user()->role_id == 4) {
+        if (Auth::user()->isPatient()) {
             return parent::getEloquentQuery()
                 ->whereDate('date', '>=', $date);
         } else {
