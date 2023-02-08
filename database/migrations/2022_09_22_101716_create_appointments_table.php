@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('phone_number');
             $table->string('category');
             $table->string('specification');
+            $table->string('time');
             $table->date('date');
             $table->string('status')->default('Pending');
             $table->timestamps();
