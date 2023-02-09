@@ -21,6 +21,8 @@ class Appointment extends Model
         'status',
         'user_id',
         'doctor_id',
+        'time',
+        'cancelation_reason',
     ];
 
     public function user(): BelongsTo

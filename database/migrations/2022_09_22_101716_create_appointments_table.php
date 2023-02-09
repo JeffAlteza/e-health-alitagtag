@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('time');
             $table->date('date');
             $table->string('status')->default('Pending');
+            $table->string('cancelation_reason')->nullable();
             $table->timestamps();
         });
     }

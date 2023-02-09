@@ -12,6 +12,7 @@ use Filament\Facades\Filament;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -45,7 +46,7 @@ class AppointmentResource extends Resource
         // for caching purposes, to load faster
         $options = Cache::remember('doctors_list', 60, function () {
             return User::where('role_id', '3')->pluck('name', 'id');
-            });
+        });
         return $form
             ->schema([
                 Card::make()->schema([
@@ -102,6 +103,9 @@ class AppointmentResource extends Resource
                         ])
                         ->default('Pending')
                         ->required(),
+                    TextArea::make('cancelation_reason')
+                        ->disabled()
+                        ->columnSpan('full')
                 ])->columns(2),
             ]);
     }
@@ -132,7 +136,7 @@ class AppointmentResource extends Resource
             ->defaultSort('id', 'desc')
             ->filters([
                 SelectFilter::make('status')
-                    ->hidden(Auth::user()->isDoctor() || Auth::user()->isPatient() )
+                    ->hidden(Auth::user()->isDoctor() || Auth::user()->isPatient())
                     ->options([
                         'Completed' => 'Completed',
                         'Approved' => 'Approved',
@@ -178,10 +182,15 @@ class AppointmentResource extends Resource
                             function (Appointment $record, array $data): void {
                                 $record->update([
                                     'status' => 'Cancelled',
+                                    'cancelation_reason' => $data['cancelation_reason'],
                                 ]);
                                 Filament::notify(status: 'success', message: 'Appointment Cancelled');
                             }
-                        ),
+                        )
+                        ->form([
+                            Textarea::make('cancelation_reason')
+                                ->required(),
+                        ]),
                     Action::make('pending')
                         ->hidden(fn (Appointment $record) => $record->status == 'Pending' || $record->status == 'Cancelled' || Auth::user()->isPatient())
                         ->requiresConfirmation()

@@ -171,6 +171,7 @@ class DoctorScheduleResource extends Resource
                             'category' => $record->category,
                             'doctor_id' => $record->doctor_id,
                             'date' => $record->date,
+                            'time' => $data['time'],
                         ]);
 
                         $user = auth()->user()->name;
