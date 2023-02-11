@@ -6,6 +6,7 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Models\Appointment;
+use App\Models\DoctorSchedule;
 use App\Models\User;
 use Carbon\Carbon;
 use Filament\Facades\Filament;
@@ -115,6 +116,7 @@ class AppointmentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->label('Appointment No.'),
+                TextColumn::make('queue_number')->label('Queue No.'),
                 TextColumn::make('user.name'),
                 TextColumn::make('name'),
                 // TextColumn::make('gender'),
@@ -165,11 +167,44 @@ class AppointmentResource extends Resource
                     })
             ])
             ->actions([
+                Action::make('reschedule')
+                        ->icon('heroicon-s-calendar')
+                        ->modalWidth('lg')
+                        ->hidden(fn (Appointment $record) => $record->status == 'Completed' || $record->status == 'Cancelled')
+                        ->action(function (Appointment $record, array $data) {
+                            $record->update([
+                                'date' => $data['date'],
+                                'time' => $data['time'],
+                            ]);
+
+                            $user = auth()->user()->name;
+                            Filament::notify(status: 'success', message: "**Good day {$user}!, your appointment has been successfully rescheduled.**");
+                        })
+                        ->form(function (Appointment $record) {
+                            $available_schedules = DoctorSchedule::where('doctor_id', $record->doctor_id)
+                                ->where('status', 'available')
+                                ->get();
+                            $doctor = User::where('id', $record->doctor_id)->pluck('name');
+                            return [
+                                TextInput::make('Doctor')
+                                    ->default($doctor)
+                                    ->disabled(),
+                                Select::make('date')
+                                    ->label('Available dates')
+                                    ->options($available_schedules->pluck('date', 'date'))
+                                    ->required(),
+                                Select::make('time')
+                                    ->options([
+                                        'AM' => 'AM (Morning)',
+                                        'PM' => 'PM (Afternoon)',
+                                    ])
+                                    ->required()
+                            ];
+                        }),
                 ActionGroup::make([
                     ViewAction::make()->color('warning'),
                     EditAction::make()
                         ->hidden(fn (Appointment $record) => Auth::user()->isPatient() && ($record->status == 'Completed' || $record->status == 'Cancelled')),
-
                     Action::make('cancel')
                         ->hidden(fn (Appointment $record) => $record->status == 'Completed' || $record->status == 'Cancelled')
                         ->requiresConfirmation()
