@@ -129,6 +129,7 @@ class DoctorScheduleResource extends Resource
                     ->colors([
                         'danger' => 'unavailable',
                         'primary' => 'available',
+                        'warning' => 'full',
                     ]),
             ])
             ->defaultSort('date', 'desc')
@@ -158,14 +159,22 @@ class DoctorScheduleResource extends Resource
                     ->modalWidth('lg')
                     ->icon('heroicon-s-document-text')
                     ->action(function (DoctorSchedule $record, array $data): void {
-                        //you can use $record for fill appointment columns
+                        // Generate the custom queue number
+                        $date = date('mdY');
+                        $doctor_id = $record->doctor_id;
+                        $latest_queue = Appointment::whereDate('created_at', date('Y-m-d'))
+                            ->where('doctor_id', $doctor_id)
+                            ->count();
+                        $queue_number = $latest_queue + 1;
+                        $queue_number = "{$date}-{$doctor_id}-{$queue_number}";
+
                         Appointment::create([
+                            'queue_number' => $queue_number,
                             'name' => $data['name'],
                             'gender' => $data['gender'],
                             'birthday' => $data['birthday'],
                             'phone_number' => $data['phone_number'],
                             'specification' => $data['specification'],
-                            // 'date' => TextColumn::get,
                             'status' => 'Pending',
                             'user_id' => auth()->user()->id,
                             'category' => $record->category,
@@ -213,12 +222,11 @@ class DoctorScheduleResource extends Resource
                     ->modalSubheading('Fill up all the corresponding fields'),
                 ActionGroup::make([
                     EditAction::make(),
-                    DeleteAction::make(),
                     Action::make('full')
                         ->hidden(fn (DoctorSchedule $record) => $record->status != 'available' || Auth::user()->isPatient())
                         ->requiresConfirmation()
-                        ->icon('heroicon-s-thumb-up')
-                        ->color('primary')
+                        ->icon('heroicon-s-ban')
+                        ->color('warning')
                         ->action(
                             function (DoctorSchedule $record, array $data): void {
                                 $record->update([
@@ -227,6 +235,7 @@ class DoctorScheduleResource extends Resource
                                 Filament::notify(status: 'success', message: 'Doctor schedule updated successfully!');
                             }
                         ),
+                    DeleteAction::make(),
                 ]),
             ])
             ->bulkActions([

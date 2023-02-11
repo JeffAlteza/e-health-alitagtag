@@ -19,6 +19,7 @@ class AppointmentFactory extends Factory
         return [
             //
             'name' => fake()->name(),
+            'queue_number'=>fake()->unique()->randomNumber(9),
             'gender' => fake()->randomElement($array = ['Male', 'Female']),
             'birthday' => fake()->date(),
             'phone_number' => fake()->randomDigit(9),

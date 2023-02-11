@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
+            $table->string('queue_number')->unique();
             $table->string('name');
             $table->string('gender');
             $table->date('birthday');

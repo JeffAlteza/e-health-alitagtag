@@ -11,6 +11,7 @@ class Appointment extends Model
     use HasFactory;
 
     protected $fillable = [
+        'queue_number',
         'name',
         'gender',
         'birthday',
