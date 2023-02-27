@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Domain\Doctor\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,8 +16,8 @@ class DoctorSchedule extends Model
         'date',
         'time_start',
         'time_end',
-        'status',
         'doctor_id',
+        'status',
     ];
 
     public function doctor(): BelongsTo
