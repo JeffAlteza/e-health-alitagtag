@@ -12,7 +12,7 @@ class DoctorScheduleData
         public readonly string $time_start,
         public readonly string $time_end,
         public readonly string $status,
-        public readonly ?string $doctor_id,
+        public readonly int $doctor_id,
     ) {
     }
 }
