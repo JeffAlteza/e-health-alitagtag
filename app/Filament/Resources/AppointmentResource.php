@@ -5,10 +5,10 @@ namespace App\Filament\Resources;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use App\Filament\Resources\AppointmentResource\Pages;
-use App\Models\Appointment;
 use App\Models\DoctorSchedule;
 use App\Models\User;
 use Carbon\Carbon;
+use Domain\Appointment\Models\Appointment;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
@@ -51,6 +51,8 @@ class AppointmentResource extends Resource
         return $form
             ->schema([
                 Card::make()->schema([
+                    TextInput::make('queue_number')
+                        ->disabled(),
                     TextInput::make('user_id')
                         ->default(Auth::id())
                         ->disabled(),
@@ -93,6 +95,12 @@ class AppointmentResource extends Resource
                     DatePicker::make('date')
                         ->label('Appointment Date')
                         ->disabled(Auth::user()->isPatient())
+                        ->required(),
+                    Select::make('time')
+                        ->options([
+                            'AM' => 'AM (Morning)',
+                            'PM' => 'PM (Afternoon)',
+                        ])
                         ->required(),
                     Select::make('status')
                         ->disabled(Auth::user()->isPatient())
