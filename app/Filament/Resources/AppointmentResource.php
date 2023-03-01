@@ -9,6 +9,7 @@ use App\Models\Appointment;
 use App\Models\DoctorSchedule;
 use App\Models\User;
 use Carbon\Carbon;
+use Closure;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
@@ -49,16 +50,18 @@ class AppointmentResource extends Resource
             return User::where('role_id', '3')->pluck('name', 'id');
         });
         return $form
-            ->schema([
-                Card::make()->schema([
+        ->schema([
+            Card::make()->schema([
                     TextInput::make('user_id')
                         ->default(Auth::id())
                         ->disabled(),
                     Select::make('doctor_id')
                         ->options($options)
                         ->label('Doctor Name')
-                        ->disabled(Auth::user()->isPatient())
-                        ->required(),
+                        // ->disabled(Auth::user()->isPatient())
+                        ->disabled(),
+                    TextInput::make('category')
+                        ->disabled(),
                     TextInput::make('name')
                         ->required()
                         ->maxLength(255),
@@ -74,13 +77,13 @@ class AppointmentResource extends Resource
                         ->tel()
                         ->required()
                         ->maxLength(255),
-                    Select::make('category')
-                        ->options([
-                            'Dental' => 'Dental',
-                            'Medical/Checkup' => 'Medical/Check Up',
-                            'OB' => 'OB',
-                            'Other' => 'Other',
-                        ])->required(),
+                    // Select::make('category')
+                    //     ->options([
+                    //         'Dental' => 'Dental',
+                    //         'Medical/Checkup' => 'Medical/Check Up',
+                    //         'OB' => 'OB',
+                    //         'Other' => 'Other',
+                    //     ])->required(),
                     Select::make('specification')
                         ->options([
                             'Infant' => 'Infant',
@@ -92,8 +95,8 @@ class AppointmentResource extends Resource
                         ])->required(),
                     DatePicker::make('date')
                         ->label('Appointment Date')
-                        ->disabled(Auth::user()->isPatient())
-                        ->required(),
+                        // ->disabled(Auth::user()->isPatient())
+                        ->disabled(),
                     Select::make('status')
                         ->disabled(Auth::user()->isPatient())
                         ->options([
@@ -103,10 +106,13 @@ class AppointmentResource extends Resource
                             'Completed' => 'Completed',
                         ])
                         ->default('Pending')
+                        ->reactive()
+                        ->afterStateUpdated(fn (callable $set) => $set('cancelation_reason', null))
                         ->required(),
                     TextArea::make('cancelation_reason')
-                        ->disabled()
+                        ->visible(fn (Closure $get) => $get('status') == 'Cancelled')
                         ->columnSpan('full')
+                        ->required()
                 ])->columns(2),
             ]);
     }
